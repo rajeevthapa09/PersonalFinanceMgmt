@@ -1,0 +1,8 @@
+Client:
+1. To install react: npx create-react-app myapp
+
+
+Server:
+1a. To create new package.json: npm init
+1b. To install Express: npm install express
+
