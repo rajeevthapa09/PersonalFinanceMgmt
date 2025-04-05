@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom"
 import { useState } from "react";
-import { signup } from "./network";
+import InputField from "../components/InputField";
 
 //Enum for user roles
 const UserRole = {
@@ -8,41 +8,94 @@ const UserRole = {
     REGULAR: 'regular',
 };
 
-export default function SignUp(){
+export default function SignUp() {
     let navigate = useNavigate();
-    const [user, setUser] = useState({fname: "", address: "", occupation: "", role: "", email: "", password:"", profileImg:""});
-    const change = (e) => {
-        setUser({...user, [e.target.name]: e.target.value});
+    const [user, setUser] = useState({ fname: "", address: "", occupation: "", role: "", email: "", password: "", profileImg: "" });
+    const handleChange = (e) => {
+        setUser({ ...user, [e.target.name]: e.target.value });
     }
 
-    const loginHandle = async(e) => {
-        if(e.target.value === "login"){
-            navigate("/")
-        }
+    const handleNavigation = (e) => {
+        e.preventDefault();
+        //more
     }
 
-    return(
+    const handleNavigateToLogin = (e) => {
+        //pending
+    }
+
+    return (
         <div>
-            <label>Name : </label><input type="text" value={user.fname} onChange={change} name="fname" /> <br />
-            <label>Address : </label><input type="text" value={user.address} onChange={change} name="address" /><br />
-            <label>Occupation : </label><input type="text" value={user.occupation} onChange={change} name="occupation" /><br />
-            <label>Role : </label>
-            <select value={user.role} onChange={change} name="role">
-                <option value={UserRole.ADVISOR}>Advisor</option>
-                <option value={UserRole.REGULAR}>Regular</option>
-            </select>
-            
-            <input type="text" value={user.role} onChange={change} name="role" /><br />
-            <label>Email : </label><input type="text" value={user.email} onChange={change} name="email" /><br />
-            <label>Password : </label><input type="password" value={user.password} onChange={change} name="password" /> <br />
-            <label>Profile Pic : </label>
-            <input 
-                filename={user.profileImg}
-                onChange={e => setUser({...user, profileImg: e.target.files[0]})}
-                type="file"
-                accept="image/*"
-                ></input><br />
-            <button onClick={loginHandle} value="login">Back to Login</button><button onClick={loginHandle} value="signup">Signup</button>
+            <form onSubmit={handleNavigation}>
+                <InputField
+                    label="Name"
+                    name="fname"
+                    value={user.fname}
+                    onChange={handleChange}
+                />
+
+                <InputField
+                    label="Address"
+                    name="address"
+                    value={user.address}
+                    onChange={handleChange}
+                />
+
+                <InputField
+                    label="Occupation"
+                    name="occupation"
+                    value={user.occupation}
+                    onChange={handleChange}
+                />
+
+                <div style={{ marginBottom: 10 }}>
+                    <label htmlFor="role">Role: </label>
+                    <select
+                        id="role"
+                        name="role"
+                        value={user.role}
+                        onChange={handleChange}
+                    >
+                        <option value={UserRole.ADVISOR}>Advisor</option>
+                        <option value={UserRole.REGULAR}>Regular</option>
+                    </select>
+                </div>
+
+                <InputField
+                    label="Email"
+                    name="email"
+                    type="email"
+                    value={user.email}
+                    onChange={handleChange}
+                />
+
+                <InputField
+                    label="Password"
+                    name="password"
+                    type="password"
+                    value={user.password}
+                    onChange={handleChange}
+                />
+
+                <div style={{ marginBottom: 10 }}>
+                    <label htmlFor="profileImg">Profile Picture: </label>
+                    <input
+                        id="profileImg"
+                        type="file"
+                        accept="image/*"
+                        onChange={e => setUser({...user, profileImg: e.target.files[0]})}
+                    />
+                </div>
+
+                <div style={{ marginTop: 20 }}>
+                    <button type="submit" style={{ marginRight: 10 }}>
+                        Signup
+                    </button>
+                    <button type="button" onClick={handleNavigateToLogin}>
+                        Back to Login
+                    </button>
+                </div>
+            </form>
         </div>
     )
 }
