@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom"
 import { useState } from "react";
 import InputField from "../components/InputField";
+import { signup } from "../services/network";
 
 //Enum for user roles
 const UserRole = {
@@ -10,14 +11,21 @@ const UserRole = {
 
 export default function SignUp() {
     let navigate = useNavigate();
-    const [user, setUser] = useState({ fname: "", address: "", occupation: "", role: "", email: "", password: "", profileImg: "" });
+    const [formData, setformData] = useState({ fname: "", address: "", occupation: "", role: "", email: "", password: "", profileImg: "" });
     const handleChange = (e) => {
-        setUser({ ...user, [e.target.name]: e.target.value });
+        setformData({ ...formData, [e.target.name]: e.target.value });
     }
 
-    const handleNavigation = (e) => {
+    const submitSignupForm = async(e) => {
         e.preventDefault();
-        //more
+        try {
+            const response = await signup(formData);
+            console.log("user added: ", response.data);
+            alert("signup successful")
+        } catch (err) {
+            console.error("Error adding user: ", err);
+            alert("Signup failed");
+        }
     }
 
     const handleNavigateToLogin = (e) => {
@@ -26,25 +34,25 @@ export default function SignUp() {
 
     return (
         <div>
-            <form onSubmit={handleNavigation}>
+            <form onSubmit={submitSignupForm}>
                 <InputField
                     label="Name"
                     name="fname"
-                    value={user.fname}
+                    value={formData.fname}
                     onChange={handleChange}
                 />
 
                 <InputField
                     label="Address"
                     name="address"
-                    value={user.address}
+                    value={formData.address}
                     onChange={handleChange}
                 />
 
                 <InputField
                     label="Occupation"
                     name="occupation"
-                    value={user.occupation}
+                    value={formData.occupation}
                     onChange={handleChange}
                 />
 
@@ -53,7 +61,7 @@ export default function SignUp() {
                     <select
                         id="role"
                         name="role"
-                        value={user.role}
+                        value={formData.role}
                         onChange={handleChange}
                     >
                         <option value={UserRole.ADVISOR}>Advisor</option>
@@ -65,7 +73,7 @@ export default function SignUp() {
                     label="Email"
                     name="email"
                     type="email"
-                    value={user.email}
+                    value={formData.email}
                     onChange={handleChange}
                 />
 
@@ -73,7 +81,7 @@ export default function SignUp() {
                     label="Password"
                     name="password"
                     type="password"
-                    value={user.password}
+                    value={formData.password}
                     onChange={handleChange}
                 />
 
@@ -83,7 +91,7 @@ export default function SignUp() {
                         id="profileImg"
                         type="file"
                         accept="image/*"
-                        onChange={e => setUser({...user, profileImg: e.target.files[0]})}
+                        onChange={e => setformData({ ...formData, profileImg: e.target.files[0] })}
                     />
                 </div>
 
