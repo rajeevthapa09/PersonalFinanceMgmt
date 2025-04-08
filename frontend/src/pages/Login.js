@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom"
 import { useContext, useState } from "react";
 import GlobalContext from "../context/GlobalContext";
 import InputField from "../components/InputField";
+import { login } from "../services/network";
 
 export default function Login() {
     let navigate = useNavigate();
@@ -13,7 +14,28 @@ export default function Login() {
     }
 
     const handleLogin = async (e) => {
-        //pending
+        e.preventDefault();
+        try{
+            const response = await login(user);
+            if (response.success) {
+                console.log("login", response.data)
+                localStorage.setItem("token", response.data.token);
+                // localStorage.setItem("userEmail", response.data.email);
+                // localStorage.setItem("userId", response.data.userId);
+                // localStorage.setItem("userName", response.data.userName);
+
+                // if(response.data.role === "regular"){
+                //     console.log("i am regular")
+                //     setState({...state, user: user.email, token: response.data.token, userId: response.data.userId, userName: response.data.userName});
+                // }else{
+                //     setState({...state, user: user.email, role: false, token: response.data.token, userId: response.data.userId, userName: response.data.userName});
+                // }
+            }
+        }catch(error){
+            console.error("Error logging in: ", error)
+        }
+        
+
     }
 
     const navigateToSignup = () => {

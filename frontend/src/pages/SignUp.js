@@ -9,7 +9,7 @@ const UserRole = {
     REGULAR: 'regular',
 };
 
-export default function SignUp() {
+export default function Signup() {
     let navigate = useNavigate();
     const [formData, setformData] = useState({ fname: "", address: "", occupation: "", role: "", email: "", password: "", profileImg: "" });
     const handleChange = (e) => {
@@ -29,7 +29,7 @@ export default function SignUp() {
     }
 
     const handleNavigateToLogin = (e) => {
-        //pending
+        navigate("/")
     }
 
     return (
