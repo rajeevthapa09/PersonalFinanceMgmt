@@ -7,16 +7,16 @@ import { login } from "../services/network";
 export default function Login() {
     let navigate = useNavigate();
     const { state, setState } = useContext(GlobalContext);
-    const [user, setUser] = useState({ email: "", password: "" });
+    const [loginData, setLoginData] = useState({ email: "", password: "" });
 
     const handleChange = (e) => {
-        setUser({ ...user, [e.target.name]: e.target.value })
+        setLoginData({ ...loginData, [e.target.name]: e.target.value })
     }
 
     const handleLogin = async (e) => {
         e.preventDefault();
         try{
-            const response = await login(user);
+            const response = await login(loginData);
             if (response.success) {
                 console.log("login", response.data)
                 localStorage.setItem("token", response.data.token);
@@ -51,7 +51,7 @@ export default function Login() {
                     label="Email"
                     name="email"
                     type="email"
-                    value={user.email}
+                    value={loginData.email}
                     onChange={handleChange}
                     placeholder="Enter your email"
                 />
@@ -60,7 +60,7 @@ export default function Login() {
                     label="Password"
                     name="password"
                     type="password"
-                    value={user.password}
+                    value={loginData.password}
                     onChange={handleChange}
                     placeholder="Enter your password"
                 />

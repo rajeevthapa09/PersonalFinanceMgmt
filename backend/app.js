@@ -2,7 +2,8 @@ const { mongoConnect } = require('./util/database');
 const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
+const PRIVATE_KEY = "finance";
 require('dotenv').config();
 const { connectToMongo, getDb } = require('./util/database');
 
@@ -45,43 +46,33 @@ async function startServer() {
     app.post("/login", async (req, res) => {
       const db = getDb();
       try {
-
         const body = req.body;
-        console.log("body", body);
-        console.log("About to query DB for user with email:", body.email);
-        let currentUser;
-        try {
-          currentUser = await db.collection(COLLECTION_NAME).findOne({ email: body.email });
-        } catch (error) {
-          console.error("error: ", error);
+        const currentUser = await db.collection(COLLECTION_NAME).findOne({ email: body.email });
+
+        if (!currentUser) {
+          return res.status(401).send({ success: false, error: "Invalid email or password" });
         }
 
-        console.log("User result:", currentUser);
-        console.log("ai m here 1")
-        if (currentUser) {
-          const correctPwd = await bcrypt.compare(body.password, currentUser.password);
-          if (correctPwd) {
-            const token = jwt.sign({ email: currentUser.email }, PRIVATE_KEY);
-            console.log("ai m here 2")
-            return res.send({
-              success: true,
-              data: {
-                token,
-                email: currentUser.email,
-                role: currentUser.role,
-                userId: currentUser._id,
-                userName: currentUser.name
-              }
-            })
-          } else {
-            return res.send({ success: false, error: "wrong password" });
-          }
-        } else {
-          return res.send({ success: false, error: "wrong password" });
+        console.log("here 11")
+        const correctPwd = await bcrypt.compare(body.password, currentUser.password);
+        if (!correctPwd) {
+          return res.status(401).send({ success: false, error: "Invalid email or password" });
         }
-      }
-      catch (err) {
-        res.send({ success: false, error: "DB error" })
+
+        const token = jwt.sign({ email: currentUser.email }, PRIVATE_KEY);
+        return res.send({
+          success: true,
+          data: {
+            token,
+            email: currentUser.email,
+            role: currentUser.role,
+            userId: currentUser._id,
+            userName: currentUser.name
+          }
+        });
+      } catch (err) {
+        console.error("Login error:", err);
+        return res.status(500).send({ success: false, error: "Internal server error" });
       }
 
     })

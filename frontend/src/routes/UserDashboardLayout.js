@@ -1,7 +1,7 @@
 import {createBrowserRouter} from "react-router-dom";
 import Home from "../pages/Home"
 
-const myrouter = createBrowserRouter([
+const appRouter = createBrowserRouter([
     {
         path: "/",
         element: <Home />
@@ -9,4 +9,4 @@ const myrouter = createBrowserRouter([
     
 ])
 
-export default myrouter
+export default appRouter
