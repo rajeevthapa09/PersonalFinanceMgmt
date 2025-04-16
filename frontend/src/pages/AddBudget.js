@@ -1,28 +1,41 @@
 
 import { useRef, useContext, useState } from "react";
 import GlobalContext from "../context/GlobalContext";
+import { useNavigate } from "react-router-dom";
 
 export default function AddBudget() {
 
     const { state, setState } = useContext(GlobalContext);
 
-    const [budget, setBudget] = useState({
-        wages: { expected: "", actual: "", notes: "" },
-        otherIncome: { expected: "", actual: "", notes: "" },
-        rent: { expected: "", actual: "", notes: "" },
-        groceries: { expected: "", actual: "", notes: "" },
-        limit: ""
-    });
+    const [budgetRows, setBudgetRows] = useState([]);
 
-    const updateBudget = (category, type, value) => {
-        setBudget((prev) => ({ ...prev, [category]: { ...prev[category], [type]: value } }))
-    }
+
+    // const updateBudget = (category, type, value) => {
+    //     setBudget((prev) => ({ ...prev, [category]: { ...prev[category], [type]: value } }))
+    // }
 
     const refYear = useRef();
     const refMonth = useRef();
 
+    let navigate = useNavigate();
+
+    const goBack = () => {
+        navigate("/")
+    }
+
+    const addNewCategory = () => {
+        setBudgetRows((prev) => [...prev, { category: "", expected: "", actual: "", notes: "" }])
+    }
+
+    const updateBudget = (row, field, value) => {
+        const copyBudget = [...budgetRows];
+        copyBudget[row][field] = value;
+        setBudgetRows(copyBudget);
+    }
+
     return (
         <div>
+            <button onClick={goBack}>Go back</button>
             <label>Select Date: </label>
             <select defaultValue={new Date().getFullYear()} ref={refYear}>
                 <option value="2025">2025</option>
@@ -47,37 +60,27 @@ export default function AddBudget() {
             </select>
 
             <table>
-                <tr>
-                    <th>Income/Expense</th>
-                    <th>Expected</th>
-                    <th>Actual</th>
-                    <th>Notes</th>
-                </tr>
-                <tr>
-                    <td>Wages</td>
-                    <td><input value={budget.wages.expected} type="text" onChange={(e) => updateBudget("wages", "expected", e.target.value)} /></td>
-                    <td><input value={budget.wages.actual} type="text" onChange={(e) => updateBudget("wages", "actual", e.target.value)} /></td>
-                    <td><input value={budget.wages.notes} type="text" onChange={(e) => updateBudget("wages", "notes", e.target.value)} /></td>
-                </tr>
-                <tr>
-                    <td>Other Income</td>
-                    <td><input value={budget.otherIncome.expected} type="text" onChange={(e) => updateBudget("otherIncome", "expected", e.target.value)} /></td>
-                    <td><input value={budget.otherIncome.actual} type="text" onChange={(e) => updateBudget("otherIncome", "actual", e.target.value)} /></td>
-                    <td><input value={budget.otherIncome.notes} type="text" onChange={(e) => updateBudget("otherIncome", "notes", e.target.value)} /></td>
-                </tr>
-                <tr>
-                    <td>Rent/Mortgage</td>
-                    <td><input value={budget.rent.expected} type="text" onChange={(e) => updateBudget("rent", "expected", e.target.value)} /></td>
-                    <td><input value={budget.rent.actual} type="text" onChange={(e) => updateBudget("rent", "actual", e.target.value)} /></td>
-                    <td><input value={budget.rent.notes} type="text" onChange={(e) => updateBudget("rent", "notes", e.target.value)} /></td>
-                </tr>
-                <tr>
-                    <td>Groceries</td>
-                    <td><input value={budget.groceries.expected} type="text" onChange={(e) => updateBudget("groceries", "expected", e.target.value)} /></td>
-                    <td><input value={budget.groceries.actual} type="text" onChange={(e) => updateBudget("groceries", "actual", e.target.value)} /></td>
-                    <td><input value={budget.groceries.notes} type="text" onChange={(e) => updateBudget("groceries", "notes", e.target.value)} /></td>
-                </tr>
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Expected</th>
+                        <th>Actual</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {budgetRows.map((row, index) => (
+                        <tr>
+                            <th><input value={row["category"]} type="text" onChange={(e) => updateBudget(index, "category", e.target.value)} /></th>
+                            <th><input value={row["expected"]} type="text" onChange={(e) => updateBudget(index, "expected", e.target.value)} /></th>
+                            <th><input value={row["actual"]} type="text" onChange={(e) => updateBudget(index, "actual", e.target.value)} /></th>
+                            <th><input value={row["notes"]} type="text" onChange={(e) => updateBudget(index, "notes", e.target.value)} /></th>
+                        </tr>
+                    ))}
+                </tbody>
             </table>
+            <button onClick={addNewCategory}>Add New Category</button>
+            <button>Submit</button>
         </div>
     )
 }

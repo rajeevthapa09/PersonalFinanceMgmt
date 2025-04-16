@@ -6,6 +6,15 @@ export default function Home(){
     const addBudget = () => {
         navigate("/addBudget")
     }
+
+    const addIncome = () => {
+        navigate("/addIncome")
+    }
+
+    const addExpense = () => {
+        navigate("/addExpense")
+    }
+
     return(
         <div>
             <p>Welcome, Rajeev! </p>
@@ -13,8 +22,8 @@ export default function Home(){
             <p>Income: $15,000</p>
             <p>Expense: $14,000</p>
             <p>Budget Left: $1,000</p>
-            <button>Add Expense</button>
-            <button>Add Income</button>
+            <button onClick={addExpense}>Add Expense</button>
+            <button onClick={addIncome}>Add Income</button>
             <button onClick={addBudget}>Add Budget</button>
             <button>Logout</button>
 
