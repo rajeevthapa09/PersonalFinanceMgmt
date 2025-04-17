@@ -24,13 +24,29 @@ export default function AddBudget() {
     }
 
     const addNewCategory = () => {
-        setBudgetRows((prev) => [...prev, { category: "", expected: "", actual: "", notes: "" }])
+        setBudgetRows((prev) => [...prev, { category: "", estimated: "", notes: "" }])
     }
 
     const updateBudget = (row, field, value) => {
         const copyBudget = [...budgetRows];
         copyBudget[row][field] = value;
         setBudgetRows(copyBudget);
+    }
+
+    const handleSubmit = () => {
+
+        for (let i = 0; i < budgetRows.length; i++) {
+            if (budgetRows[i].category.trim() === "" || budgetRows[i].estimated === ""){
+                alert("Please fill out all fields");
+                return;
+            }
+
+            if(isNaN(budgetRows[i].estimated)){
+                alert("Please enter valid input");
+                return;
+            }
+
+        }
     }
 
     return (
@@ -63,24 +79,23 @@ export default function AddBudget() {
                 <thead>
                     <tr>
                         <th>Category</th>
-                        <th>Expected</th>
-                        <th>Actual</th>
+                        <th>Estimated</th>
                         <th>Notes</th>
                     </tr>
                 </thead>
                 <tbody>
                     {budgetRows.map((row, index) => (
                         <tr>
-                            <th><input value={row["category"]} type="text" onChange={(e) => updateBudget(index, "category", e.target.value)} /></th>
-                            <th><input value={row["expected"]} type="text" onChange={(e) => updateBudget(index, "expected", e.target.value)} /></th>
-                            <th><input value={row["actual"]} type="text" onChange={(e) => updateBudget(index, "actual", e.target.value)} /></th>
-                            <th><input value={row["notes"]} type="text" onChange={(e) => updateBudget(index, "notes", e.target.value)} /></th>
+                            <td><input value={row["category"]} type="text" onChange={(e) => updateBudget(index, "category", e.target.value)} /></td>
+                            <td><input value={row["estimated"]} type="text" onChange={(e) => updateBudget(index, "estimated", e.target.value)} /></td>
+                            <td><input value={row["notes"]} type="text" onChange={(e) => updateBudget(index, "notes", e.target.value)} /></td>
+                            <td>{index === budgetRows.length - 1 && (<button onClick={addNewCategory}>+</button>)}</td>
                         </tr>
                     ))}
                 </tbody>
             </table>
-            <button onClick={addNewCategory}>Add New Category</button>
-            <button>Submit</button>
+
+            <button onSubmit={handleSubmit}>Submit</button>
         </div>
     )
 }
