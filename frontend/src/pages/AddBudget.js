@@ -7,7 +7,8 @@ export default function AddBudget() {
 
     const { state, setState } = useContext(GlobalContext);
 
-    const [budgetRows, setBudgetRows] = useState([]);
+    const [budgetRows, setBudgetRows] = useState([{ category: "", estimated: "", notes: "" }]);
+    const [errors, setError] = useState([]);
 
 
     // const updateBudget = (category, type, value) => {
@@ -34,18 +35,35 @@ export default function AddBudget() {
     }
 
     const handleSubmit = () => {
+        let newErrors = [];
 
         for (let i = 0; i < budgetRows.length; i++) {
-            if (budgetRows[i].category.trim() === "" || budgetRows[i].estimated === ""){
-                alert("Please fill out all fields");
-                return;
+            const rowErrors = {}
+
+            if (budgetRows[i].category.trim() === "" || budgetRows[i].estimated === "") {
+                // alert("Please fill out all fields");
+                rowErrors.category = "true";
             }
 
-            if(isNaN(budgetRows[i].estimated)){
-                alert("Please enter valid input");
-                return;
+            if (isNaN(budgetRows[i].estimated)) {
+                // alert("Please enter valid input");
+                rowErrors.estimated = "true"
             }
+            newErrors.push(rowErrors);
+        }
+        setError(newErrors);
 
+        let hasErrors = false;
+
+        for (let i = 0; i < newErrors.length; i++) {
+            const row = newErrors[i];
+            for (let key in row) {
+                if (row[key]) {
+                    hasErrors = true;
+                    break;
+                }
+            }
+            if (hasErrors) break;
         }
     }
 
@@ -86,8 +104,8 @@ export default function AddBudget() {
                 <tbody>
                     {budgetRows.map((row, index) => (
                         <tr>
-                            <td><input value={row["category"]} type="text" onChange={(e) => updateBudget(index, "category", e.target.value)} /></td>
-                            <td><input value={row["estimated"]} type="text" onChange={(e) => updateBudget(index, "estimated", e.target.value)} /></td>
+                            <td><input value={row["category"]} type="text" onChange={(e) => updateBudget(index, "category", e.target.value)} style={{ border: errors[index]?.category ? "2px solid red" : "1px solid #ccc" }}/></td>
+                            <td><input value={row["estimated"]} type="text" onChange={(e) => updateBudget(index, "estimated", e.target.value)} style={{ border: errors[index]?.estimated ? "2px solid red" : "1px solid #ccc" }} /></td>
                             <td><input value={row["notes"]} type="text" onChange={(e) => updateBudget(index, "notes", e.target.value)} /></td>
                             <td>{index === budgetRows.length - 1 && (<button onClick={addNewCategory}>+</button>)}</td>
                         </tr>
@@ -95,7 +113,7 @@ export default function AddBudget() {
                 </tbody>
             </table>
 
-            <button onSubmit={handleSubmit}>Submit</button>
+            <button onClick={handleSubmit}>Submit</button>
         </div>
     )
 }
