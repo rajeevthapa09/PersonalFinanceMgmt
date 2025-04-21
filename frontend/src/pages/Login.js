@@ -20,7 +20,8 @@ export default function Login() {
             if (response.success) {
                 console.log("login", response.data)
                 localStorage.setItem("token", response.data.token);
-                // localStorage.setItem("userEmail", response.data.email);
+                localStorage.setItem("userEmail", response.data.email);
+                setState({...state, user: loginData.email, token: response.data.token});
                 // localStorage.setItem("userId", response.data.userId);
                 // localStorage.setItem("userName", response.data.userName);
 

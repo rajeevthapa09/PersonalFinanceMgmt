@@ -77,6 +77,52 @@ async function startServer() {
 
     })
 
+    function auth(req, res, next) {
+      const token = req.headers["authorization"]?.split(" ")[1];
+      console.log("authorization header: ", req.headers["authorization"]);
+      const key = PRIVATE_KEY;
+
+      console.log("token is auth: ", token);
+      if (!token) {
+        return res.status(401).send({ success: false, error: "Please provide token" });
+      }
+
+      jwt.verify(token, key, (err, decoded) => {
+        if (err) {
+          return res.status(401).send({ success: false, error: err.message });
+        }
+        // req.currentUser = decoded;
+        next();
+      })
+    }
+    app.use(auth);
+
+    app.post("/api/budget/:email", async (req, res) => {
+      const db = getDb();
+
+      const email = req.params.email;
+      const {budget, date} = req.body;
+
+      try {
+        console.log("Incoming:", req.body,  email);
+        const check = await db.collection(COLLECTION_NAME).findOne({ email: req.params.email, "budget.date": req.body.date });
+        
+        console.log("2")
+        let ret = null;
+        if (check) {
+          ret = await db.collection(COLLECTION_NAME).updateOne({ email: req.params.email }, { $set: { "budget.$[obj].category": req.body.budget } },
+            { arrayFilters: [{ "obj.date": req.body.date }] });
+        } else {
+          ret = await db.collection(COLLECTION_NAME).updateOne({ email: req.params.email }, { $push: { category: req.body } });
+        }
+        res.status(200).send({ success: true, data: ret });
+      } catch (error) {
+        console.error(error);
+        res.status(400).send({ success: false, error: "db error" })
+      }
+
+    })
+
     app.listen(3001, () => {
       console.log('Your Server is running on 3001');
     });

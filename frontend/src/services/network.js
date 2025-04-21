@@ -1,5 +1,6 @@
 import axios from 'axios'
 axios.defaults.baseURL = "http://localhost:3001";
+export const userEmail = localStorage.getItem("userEmail")
 
 
 export async function signup(userData) {
@@ -29,6 +30,21 @@ export async function login(userData){
                 'Content-Type': 'application/json'
             }
         });
+        return res.data;
+    }catch (error){
+        console.log(error.message);
+        return null;
+    }
+}
+
+export async function storeBudget(budgetInfo){
+    const url=`/api/budget/${userEmail}`;
+    console.log("url", url)
+    try{
+        const res = await axios.post(url, budgetInfo, {
+            headers:{'Authorization': `Bearer ${localStorage.getItem("token")}`}
+        });
+        console.log("res.data", res.data)
         return res.data;
     }catch (error){
         console.log(error.message);

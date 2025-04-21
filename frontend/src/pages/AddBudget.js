@@ -2,6 +2,7 @@
 import { useRef, useContext, useState } from "react";
 import GlobalContext from "../context/GlobalContext";
 import { useNavigate } from "react-router-dom";
+import { storeBudget } from "../services/network";
 
 export default function AddBudget() {
 
@@ -9,11 +10,6 @@ export default function AddBudget() {
 
     const [budgetRows, setBudgetRows] = useState([{ category: "", estimated: "", notes: "" }]);
     const [errors, setError] = useState([]);
-
-
-    // const updateBudget = (category, type, value) => {
-    //     setBudget((prev) => ({ ...prev, [category]: { ...prev[category], [type]: value } }))
-    // }
 
     const refYear = useRef();
     const refMonth = useRef();
@@ -34,36 +30,39 @@ export default function AddBudget() {
         setBudgetRows(copyBudget);
     }
 
-    const handleSubmit = () => {
-        let newErrors = [];
+    const handleSubmit = async() => {
+        let errorList = [];
 
         for (let i = 0; i < budgetRows.length; i++) {
-            const rowErrors = {}
-
-            if (budgetRows[i].category.trim() === "" || budgetRows[i].estimated === "") {
-                // alert("Please fill out all fields");
-                rowErrors.category = "true";
+            const errorRow = {};
+            if (budgetRows[i].category.trim() === "") {
+                errorRow.category = true;
             }
-
-            if (isNaN(budgetRows[i].estimated)) {
-                // alert("Please enter valid input");
-                rowErrors.estimated = "true"
+            if (budgetRows[i].estimated.trim() === "" || isNaN(budgetRows[i].estimated)) {
+                errorRow.estimated = true
             }
-            newErrors.push(rowErrors);
+            errorList.push(errorRow);
         }
-        setError(newErrors);
+        setError(errorList);
 
-        let hasErrors = false;
+        let hasError = false;
 
-        for (let i = 0; i < newErrors.length; i++) {
-            const row = newErrors[i];
-            for (let key in row) {
-                if (row[key]) {
-                    hasErrors = true;
+        for (let i = 0; i < errorList.length; i++) {
+            for (let key in errorList[i]) {
+                if (errorList[i][key]) {
+                    hasError = true;
                     break;
                 }
             }
-            if (hasErrors) break;
+            if (hasError) {
+                alert("Please fix the highlighted fields before submitting.");
+                break;
+            }
+        }
+
+        const ret = await storeBudget({budget: budgetRows, date: `${refYear.current.value}-${refMonth.current.value}`});
+        if (ret.success) {
+            alert("successfully submitted");
         }
     }
 
@@ -104,8 +103,8 @@ export default function AddBudget() {
                 <tbody>
                     {budgetRows.map((row, index) => (
                         <tr>
-                            <td><input value={row["category"]} type="text" onChange={(e) => updateBudget(index, "category", e.target.value)} style={{ border: errors[index]?.category ? "2px solid red" : "1px solid #ccc" }}/></td>
-                            <td><input value={row["estimated"]} type="text" onChange={(e) => updateBudget(index, "estimated", e.target.value)} style={{ border: errors[index]?.estimated ? "2px solid red" : "1px solid #ccc" }} /></td>
+                            <td><input value={row["category"]} type="text" onChange={(e) => updateBudget(index, "category", e.target.value)} style={{ border: errors[index]?.category ? "2px solid red" : "2px solid #ccc" }} /></td>
+                            <td><input value={row["estimated"]} type="text" onChange={(e) => updateBudget(index, "estimated", e.target.value)} style={{ border: errors[index]?.estimated ? "2px solid red" : "2px solid #ccc" }} /></td>
                             <td><input value={row["notes"]} type="text" onChange={(e) => updateBudget(index, "notes", e.target.value)} /></td>
                             <td>{index === budgetRows.length - 1 && (<button onClick={addNewCategory}>+</button>)}</td>
                         </tr>
