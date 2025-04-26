@@ -62,7 +62,7 @@ export default function AddBudget() {
 
         const ret = await storeBudget({budget: budgetRows, date: `${refYear.current.value}-${refMonth.current.value}`});
         if (ret.success) {
-            alert("successfully submitted");
+            alert(" successfully submitted");
         }
     }
 
