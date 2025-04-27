@@ -1,8 +1,8 @@
 
-import { useRef, useContext, useState } from "react";
+import { useRef, useContext, useState, useEffect } from "react";
 import GlobalContext from "../context/GlobalContext";
 import { useNavigate } from "react-router-dom";
-import { storeBudget } from "../services/network";
+import { storeBudget, getBudget } from "../services/network";
 
 export default function AddBudget() {
 
@@ -30,7 +30,27 @@ export default function AddBudget() {
         setBudgetRows(copyBudget);
     }
 
-    const handleSubmit = async() => {
+
+
+    useEffect(() => {
+        const viewBudget = async () => {
+            try {
+                const ret = await getBudget(`${refYear.current.value}-${refMonth.current.value}`)
+                console.log("rettt", ret)
+                if (ret.data) {
+                    setBudgetRows(ret.data.budget);
+                } else {
+                    setBudgetRows([{ category: "", estimated: "", notes: "" }])
+                }
+
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        viewBudget();
+    }, [])
+
+    const handleSubmit = async () => {
         let errorList = [];
 
         for (let i = 0; i < budgetRows.length; i++) {
@@ -60,9 +80,9 @@ export default function AddBudget() {
             }
         }
 
-        const ret = await storeBudget({budget: budgetRows, date: `${refYear.current.value}-${refMonth.current.value}`});
+        const ret = await storeBudget({ budget: budgetRows, date: `${refYear.current.value}-${refMonth.current.value}` });
         if (ret.success) {
-            alert(" successfully submitted");
+            alert("successfully submitted");
         }
     }
 

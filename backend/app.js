@@ -123,6 +123,22 @@ async function startServer() {
 
     })
 
+    app.get("/getBudget/:date/:email", async (req, res) => {
+      const db = getDb();
+      try {
+        const ret = await db.collection(COLLECTION_NAME).findOne({ email: req.params.email });
+        const check = ret.category.filter((bud) => bud.date === req.params.date);
+        if (check.length > 0) {
+          res.status(200).send({ success: true, data: check[0] })
+        } else {
+          res.status(200).send({ success: true, data: null })
+        }
+    
+      } catch (error) {
+        res.status(400).send({ success: false, error: "db error" })
+      }
+    })
+
     app.listen(3001, () => {
       console.log('Your Server is running on 3001');
     });

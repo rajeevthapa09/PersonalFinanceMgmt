@@ -51,3 +51,17 @@ export async function storeBudget(budgetInfo){
         return null;
     }
 }
+
+export async function getBudget(date){
+    const url = `/getBudget/${date}/${userEmail}`
+    console.log("url", url);
+    try{
+        const res = await axios.get(url, {
+            headers:{'Authorization': `Bearer ${localStorage.getItem("token")}`}
+        })
+        return res.data;
+
+    }catch(error){
+        return null;
+    }
+}
