@@ -59,6 +59,7 @@ export async function getBudget(date){
         const res = await axios.get(url, {
             headers:{'Authorization': `Bearer ${localStorage.getItem("token")}`}
         })
+        console.log("network", res.data)
         return res.data;
 
     }catch(error){

@@ -1,5 +1,5 @@
 import logo from './logo.svg';
-import './App.css';
+import './styles/global.css';
 import { useState } from 'react';
 import GlobalContext from './context/GlobalContext';
 import { RouterProvider } from 'react-router-dom';

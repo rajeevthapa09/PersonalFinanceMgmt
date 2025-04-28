@@ -99,14 +99,10 @@ async function startServer() {
 
     app.post("/api/budgets/:email", async (req, res) => {
       const db = getDb();
-
       const email = req.params.email;
 
       try {
-        console.log("Incoming:", req.body, email);
         const budgetFound = await db.collection(COLLECTION_NAME).findOne({ email: req.params.email, "budget.date": req.body.date });
-
-        console.log("2")
         let dbResult = null;
         if (budgetFound) {
           dbResult = await db.collection(COLLECTION_NAME).updateOne({ email: req.params.email }, { $set: { "budget.$[obj].items": req.body.items } },
@@ -126,8 +122,11 @@ async function startServer() {
       const db = getDb();
       try {
         const dbResult = await db.collection(COLLECTION_NAME).findOne({ email: req.query.email });
+        if (!dbResult) {
+          return res.status(404).send({ success: false, error: "User not found" });
+        }
         const budgetFound = dbResult.budget.find((budgetItem) => budgetItem.date === req.query.date);
-        if (budgetFound.length > 0) {
+        if (budgetFound) {
           res.status(200).send({ success: true, data: budgetFound })
         } else {
           res.status(200).send({ success: true, data: null })

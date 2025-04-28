@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom"
 import { useState } from "react";
 import InputField from "../components/InputField";
 import { signup } from "../services/network";
+import "./../styles/global.css"
 
 //Enum for user roles
 const UserRole = {
@@ -33,7 +34,7 @@ export default function Signup() {
     }
 
     return (
-        <div>
+        <div className="page-container">
             <form onSubmit={submitSignupForm}>
                 <InputField
                     label="Name"

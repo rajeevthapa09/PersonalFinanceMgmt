@@ -3,6 +3,7 @@ import { useContext, useState } from "react";
 import GlobalContext from "../context/GlobalContext";
 import InputField from "../components/InputField";
 import { login } from "../services/network";
+import "./../styles/global.css"
 
 export default function Login() {
     let navigate = useNavigate();
@@ -44,9 +45,9 @@ export default function Login() {
     }
 
     return (
-        <div style={{ marginLeft: 100, marginRight: 100, textAlign: "center" }}>
-            <p style={{ fontSize: 50 }}>FINT</p>
-            <p style={{ fontSize: 10 }}>Master your Finance</p>
+        <div className="page-container">
+            <p className="header-title">FINT</p>
+            <p className="header-subtitle">Master your Finance</p>
             <form onSubmit={handleLogin}>
                 <InputField
                     label="Email"

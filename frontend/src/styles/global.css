@@ -1,0 +1,85 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .page-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+  
+  select, input[type="text"], input[type="email"], input[type="password"], input[type="file"] {
+    width: 90%;
+    box-sizing: border-box;
+    padding: 6px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  th, td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  button {
+    padding: 10px 20px;
+    margin: 10px 5px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  button.add-category {
+    background-color: #28a745;
+  }
+  
+  button.add-category:hover {
+    background-color: #218838;
+  }
+  
+  .error {
+    color: red;
+    font-size: 0.9rem;
+  }
+
+  .header-title {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+    color: #007bff; /* Blue tone */
+  }
+  
+  .header-subtitle {
+    font-size: 16px;
+    font-weight: normal;
+    margin-bottom: 30px;
+    text-align: center;
+    color: #555; /* Soft dark gray */
+  }

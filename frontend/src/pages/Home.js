@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import "./../styles/global.css"
 
 export default function Home() {
     let navigate = useNavigate();
@@ -24,7 +25,7 @@ export default function Home() {
 
 
 return (
-    <div>
+    <div className="page-container">
         <p>Welcome, Rajeev! </p>
         <p>Here is your financial summary for April, 2025</p>
         <p>Income: $15,000</p>

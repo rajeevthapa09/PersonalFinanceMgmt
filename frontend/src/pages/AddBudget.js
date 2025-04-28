@@ -3,6 +3,7 @@ import { useRef, useContext, useState, useEffect } from "react";
 import GlobalContext from "../context/GlobalContext";
 import { useNavigate } from "react-router-dom";
 import { storeBudget, getBudget } from "../services/network";
+import "./../styles/global.css"
 
 export default function AddBudget() {
 
@@ -31,22 +32,22 @@ export default function AddBudget() {
     }
 
 
-
-    useEffect(() => {
-        const viewBudget = async () => {
-            try {
-                const ret = await getBudget(`${refYear.current.value}-${refMonth.current.value}`)
-                console.log("rettt", ret)
-                if (ret.data) {
-                    setBudgetRows(ret.data.items);
-                } else {
-                    setBudgetRows([{ category: "", estimated: "", notes: "" }])
-                }
-
-            } catch (error) {
-                console.log(error);
+    const viewBudget = async () => {
+        try {
+            const ret = await getBudget(`${refYear.current.value}-${refMonth.current.value}`)
+            console.log("rettt", ret)
+            if (ret.data) {
+                setBudgetRows(ret.data.items);
+            } else {
+                setBudgetRows([{ category: "", estimated: "", notes: "" }])
             }
+
+        } catch (error) {
+            console.log(error);
         }
+    }
+
+    useEffect(() => {    
         viewBudget();
     }, [])
 
@@ -87,17 +88,17 @@ export default function AddBudget() {
     }
 
     return (
-        <div>
+        <div className="page-container">
             <button onClick={goBack}>Go back</button>
             <label>Select Date: </label>
-            <select defaultValue={new Date().getFullYear()} ref={refYear}>
+            <select defaultValue={new Date().getFullYear()} ref={refYear} onChange={viewBudget}>
                 <option value="2025">2025</option>
                 <option value="2024">2024</option>
                 <option value="2023">2023</option>
                 <option value="2022">2022</option>
                 <option value="2021">2021</option>
             </select>
-            <select defaultValue={new Date().getMonth() + 1} ref={refMonth}>
+            <select defaultValue={new Date().getMonth() + 1} ref={refMonth} onChange={viewBudget}>
                 <option value="1">January</option>
                 <option value="2">Febuary</option>
                 <option value="3">March</option>
@@ -122,10 +123,20 @@ export default function AddBudget() {
                 </thead>
                 <tbody>
                     {budgetItems.map((row, index) => (
-                        <tr>
-                            <td><input value={row["category"]} type="text" onChange={(e) => updateBudget(index, "category", e.target.value)} style={{ border: errors[index]?.category ? "2px solid red" : "2px solid #ccc" }} /></td>
+                        <tr key={index}>
+                            {/* <td><input value={row["category"]} type="text" onChange={(e) => updateBudget(index, "category", e.target.value)} style={{ border: errors[index]?.category ? "2px solid red" : "2px solid #ccc" }} /></td> */}
+                            <td>
+                                <select value={row["category"]} type="text" onChange={(e) => updateBudget(index, "category", e.target.value)} style={{ border: errors[index]?.category ? "2px solid red" : "2px solid #ccc" }}>
+                                    <option value="">Select a Category</option>
+                                    <option value="Grocery">Grocery</option>
+                                    <option value="Entertainment">Entertainment</option>
+                                    <option value="Gas">Gas</option>
+                                    <option value="Insurance">Insurance</option>
+                                    <option value="Others">Others</option>
+                                </select>
+                            </td>
                             <td><input value={row["estimated"]} type="text" onChange={(e) => updateBudget(index, "estimated", e.target.value)} style={{ border: errors[index]?.estimated ? "2px solid red" : "2px solid #ccc" }} /></td>
-                            <td><input value={row["notes"]} type="text" onChange={(e) => updateBudget(index, "notes", e.target.value)} /></td>
+                            <td><input value={row["notes"]} type="text" onChange={(e) => updateBudget(index, "notes", e.target.value)} style={{ border: "2px solid #ccc" }} /></td>
                             <td>{index === budgetItems.length - 1 && (<button onClick={addNewBudgetRow}>+</button>)}</td>
                         </tr>
                     ))}
