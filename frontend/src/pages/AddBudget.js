@@ -8,7 +8,7 @@ export default function AddBudget() {
 
     const { state, setState } = useContext(GlobalContext);
 
-    const [budgetRows, setBudgetRows] = useState([{ category: "", estimated: "", notes: "" }]);
+    const [budgetItems, setBudgetRows] = useState([{ category: "", estimated: "", notes: "" }]);
     const [errors, setError] = useState([]);
 
     const refYear = useRef();
@@ -20,12 +20,12 @@ export default function AddBudget() {
         navigate("/")
     }
 
-    const addNewCategory = () => {
+    const addNewBudgetRow = () => {
         setBudgetRows((prev) => [...prev, { category: "", estimated: "", notes: "" }])
     }
 
     const updateBudget = (row, field, value) => {
-        const copyBudget = [...budgetRows];
+        const copyBudget = [...budgetItems];
         copyBudget[row][field] = value;
         setBudgetRows(copyBudget);
     }
@@ -38,7 +38,7 @@ export default function AddBudget() {
                 const ret = await getBudget(`${refYear.current.value}-${refMonth.current.value}`)
                 console.log("rettt", ret)
                 if (ret.data) {
-                    setBudgetRows(ret.data.budget);
+                    setBudgetRows(ret.data.items);
                 } else {
                     setBudgetRows([{ category: "", estimated: "", notes: "" }])
                 }
@@ -53,12 +53,12 @@ export default function AddBudget() {
     const handleSubmit = async () => {
         let errorList = [];
 
-        for (let i = 0; i < budgetRows.length; i++) {
+        for (let i = 0; i < budgetItems.length; i++) {
             const errorRow = {};
-            if (budgetRows[i].category.trim() === "") {
+            if (budgetItems[i].category.trim() === "") {
                 errorRow.category = true;
             }
-            if (budgetRows[i].estimated.trim() === "" || isNaN(budgetRows[i].estimated)) {
+            if (budgetItems[i].estimated.trim() === "" || isNaN(budgetItems[i].estimated)) {
                 errorRow.estimated = true
             }
             errorList.push(errorRow);
@@ -80,7 +80,7 @@ export default function AddBudget() {
             }
         }
 
-        const ret = await storeBudget({ budget: budgetRows, date: `${refYear.current.value}-${refMonth.current.value}` });
+        const ret = await storeBudget({ items: budgetItems, date: `${refYear.current.value}-${refMonth.current.value}` });
         if (ret.success) {
             alert("successfully submitted");
         }
@@ -121,12 +121,12 @@ export default function AddBudget() {
                     </tr>
                 </thead>
                 <tbody>
-                    {budgetRows.map((row, index) => (
+                    {budgetItems.map((row, index) => (
                         <tr>
                             <td><input value={row["category"]} type="text" onChange={(e) => updateBudget(index, "category", e.target.value)} style={{ border: errors[index]?.category ? "2px solid red" : "2px solid #ccc" }} /></td>
                             <td><input value={row["estimated"]} type="text" onChange={(e) => updateBudget(index, "estimated", e.target.value)} style={{ border: errors[index]?.estimated ? "2px solid red" : "2px solid #ccc" }} /></td>
                             <td><input value={row["notes"]} type="text" onChange={(e) => updateBudget(index, "notes", e.target.value)} /></td>
-                            <td>{index === budgetRows.length - 1 && (<button onClick={addNewCategory}>+</button>)}</td>
+                            <td>{index === budgetItems.length - 1 && (<button onClick={addNewBudgetRow}>+</button>)}</td>
                         </tr>
                     ))}
                 </tbody>

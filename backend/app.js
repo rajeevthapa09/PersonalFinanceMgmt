@@ -97,45 +97,44 @@ async function startServer() {
     }
     app.use(auth);
 
-    app.post("/api/budget/:email", async (req, res) => {
+    app.post("/api/budgets/:email", async (req, res) => {
       const db = getDb();
 
       const email = req.params.email;
-      const {budget, date} = req.body;
 
       try {
-        console.log("Incoming:", req.body,  email);
-        const check = await db.collection(COLLECTION_NAME).findOne({ email: req.params.email, "budget.date": req.body.date });
-        
+        console.log("Incoming:", req.body, email);
+        const budgetFound = await db.collection(COLLECTION_NAME).findOne({ email: req.params.email, "budget.date": req.body.date });
+
         console.log("2")
-        let ret = null;
-        if (check) {
-          ret = await db.collection(COLLECTION_NAME).updateOne({ email: req.params.email }, { $set: { "budget.$[obj].category": req.body.budget } },
+        let dbResult = null;
+        if (budgetFound) {
+          dbResult = await db.collection(COLLECTION_NAME).updateOne({ email: req.params.email }, { $set: { "budget.$[obj].items": req.body.items } },
             { arrayFilters: [{ "obj.date": req.body.date }] });
         } else {
-          ret = await db.collection(COLLECTION_NAME).updateOne({ email: req.params.email }, { $push: { category: req.body } });
+          dbResult = await db.collection(COLLECTION_NAME).updateOne({ email: req.params.email }, { $push: { budget: req.body } });
         }
-        res.status(200).send({ success: true, data: ret });
+        res.status(200).send({ success: true, data: dbResult });
       } catch (error) {
         console.error(error);
-        res.status(400).send({ success: false, error: "db error" })
+        res.status(400).send({ success: false, error: error.message })
       }
 
     })
 
-    app.get("/getBudget/:date/:email", async (req, res) => {
+    app.get("/api/budgets", async (req, res) => {
       const db = getDb();
       try {
-        const ret = await db.collection(COLLECTION_NAME).findOne({ email: req.params.email });
-        const check = ret.category.filter((bud) => bud.date === req.params.date);
-        if (check.length > 0) {
-          res.status(200).send({ success: true, data: check[0] })
+        const dbResult = await db.collection(COLLECTION_NAME).findOne({ email: req.query.email });
+        const budgetFound = dbResult.budget.find((budgetItem) => budgetItem.date === req.query.date);
+        if (budgetFound.length > 0) {
+          res.status(200).send({ success: true, data: budgetFound })
         } else {
           res.status(200).send({ success: true, data: null })
         }
-    
+
       } catch (error) {
-        res.status(400).send({ success: false, error: "db error" })
+        res.status(400).send({ success: false, error: error.message })
       }
     })
 

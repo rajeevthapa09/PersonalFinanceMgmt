@@ -38,7 +38,7 @@ export async function login(userData){
 }
 
 export async function storeBudget(budgetInfo){
-    const url=`/api/budget/${userEmail}`;
+    const url=`/api/budgets/${userEmail}`;
     console.log("url", url)
     try{
         const res = await axios.post(url, budgetInfo, {
@@ -48,12 +48,12 @@ export async function storeBudget(budgetInfo){
         return res.data;
     }catch (error){
         console.log(error.message);
-        return null;
+        return {success: false}
     }
 }
 
 export async function getBudget(date){
-    const url = `/getBudget/${date}/${userEmail}`
+    const url = `/api/budgets?date=${date}&email=${userEmail}`;
     console.log("url", url);
     try{
         const res = await axios.get(url, {
@@ -62,6 +62,7 @@ export async function getBudget(date){
         return res.data;
 
     }catch(error){
-        return null;
+        console.log(error.message);
+        return {success: false}
     }
 }
