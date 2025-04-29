@@ -11,6 +11,8 @@ export default function AddBudget() {
 
     const [budgetItems, setBudgetRows] = useState([{ category: "", estimated: "", notes: "" }]);
     const [errors, setError] = useState([]);
+    const [categories, setCategories] = useState(["Groceries", "Entertainment", "Gas", "Insurance", "Others"]);
+    const [customcategory, setCustomCategory] = useState("")
 
     const refYear = useRef();
     const refMonth = useRef();
@@ -47,7 +49,7 @@ export default function AddBudget() {
         }
     }
 
-    useEffect(() => {    
+    useEffect(() => {
         viewBudget();
     }, [])
 
@@ -125,7 +127,7 @@ export default function AddBudget() {
                     {budgetItems.map((row, index) => (
                         <tr key={index}>
                             {/* <td><input value={row["category"]} type="text" onChange={(e) => updateBudget(index, "category", e.target.value)} style={{ border: errors[index]?.category ? "2px solid red" : "2px solid #ccc" }} /></td> */}
-                            <td>
+                            {/* <td>
                                 <select value={row["category"]} type="text" onChange={(e) => updateBudget(index, "category", e.target.value)} style={{ border: errors[index]?.category ? "2px solid red" : "2px solid #ccc" }}>
                                     <option value="">Select a Category</option>
                                     <option value="Grocery">Grocery</option>
@@ -133,6 +135,13 @@ export default function AddBudget() {
                                     <option value="Gas">Gas</option>
                                     <option value="Insurance">Insurance</option>
                                     <option value="Others">Others</option>
+                                </select>
+                            </td> */}
+                            <td>
+                                <select>
+                                    {categories.map((cat, idx) => 
+                                        <option key={idx}>{cat}</option>
+                                    )}
                                 </select>
                             </td>
                             <td><input value={row["estimated"]} type="text" onChange={(e) => updateBudget(index, "estimated", e.target.value)} style={{ border: errors[index]?.estimated ? "2px solid red" : "2px solid #ccc" }} /></td>
