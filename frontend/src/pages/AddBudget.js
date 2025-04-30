@@ -9,7 +9,7 @@ export default function AddBudget() {
 
     const { state, setState } = useContext(GlobalContext);
 
-    const [budgetItems, setBudgetRows] = useState([{ category: "", estimated: "", notes: "" }]);
+    const [budgetItems, setBudgetItems] = useState([{ category: "", estimated: "", notes: "" }]);
     const [errors, setError] = useState([]);
     const [categories, setCategories] = useState(["Groceries", "Entertainment", "Gas", "Insurance", "Others"]);
     const [customcategory, setCustomCategory] = useState("")
@@ -24,13 +24,13 @@ export default function AddBudget() {
     }
 
     const addNewBudgetRow = () => {
-        setBudgetRows((prev) => [...prev, { category: "", estimated: "", notes: "" }])
+        setBudgetItems((prev) => [...prev, { category: "", estimated: "", notes: "" }])
     }
 
     const updateBudget = (row, field, value) => {
         const copyBudget = [...budgetItems];
         copyBudget[row][field] = value;
-        setBudgetRows(copyBudget);
+        setBudgetItems(copyBudget);
     }
 
 
@@ -39,9 +39,9 @@ export default function AddBudget() {
             const ret = await getBudget(`${refYear.current.value}-${refMonth.current.value}`)
             console.log("rettt", ret)
             if (ret.data) {
-                setBudgetRows(ret.data.items);
+                setBudgetItems(ret.data.items);
             } else {
-                setBudgetRows([{ category: "", estimated: "", notes: "" }])
+                setBudgetItems([{ category: "", estimated: "", notes: "" }])
             }
 
         } catch (error) {
@@ -138,14 +138,15 @@ export default function AddBudget() {
                                 </select>
                             </td> */}
                             <td>
-                                <select>
-                                    {categories.map((cat, idx) => 
-                                        <option key={idx}>{cat}</option>
+                                {row.category !== "Others" ? <select onChange={(e) => updateBudget(index, "category", e.target.value)} style={{ border: errors[index]?.category ? "2px solid red" : "2px solid #ccc" }}>
+                                    {categories.map((cat, idx) =>
+                                        <option key={idx} value={cat}>{cat}</option>
                                     )}
-                                </select>
+                                </select> : <input value={customcategory} type="text" onChange={(e) => updateBudget(index, "category", e.target.value)} style={{ border: errors[index]?.estimated ? "2px solid red" : "2px solid #ccc" }} />
+                                }
                             </td>
-                            <td><input value={row["estimated"]} type="text" onChange={(e) => updateBudget(index, "estimated", e.target.value)} style={{ border: errors[index]?.estimated ? "2px solid red" : "2px solid #ccc" }} /></td>
-                            <td><input value={row["notes"]} type="text" onChange={(e) => updateBudget(index, "notes", e.target.value)} style={{ border: "2px solid #ccc" }} /></td>
+                            <td><input value={budgetItems.estimated} type="text" onChange={(e) => updateBudget(index, "estimated", e.target.value)} style={{ border: errors[index]?.estimated ? "2px solid red" : "2px solid #ccc" }} /></td>
+                            <td><input value={budgetItems.note} type="text" onChange={(e) => updateBudget(index, "notes", e.target.value)} style={{ border: "2px solid #ccc" }} /></td>
                             <td>{index === budgetItems.length - 1 && (<button onClick={addNewBudgetRow}>+</button>)}</td>
                         </tr>
                     ))}
