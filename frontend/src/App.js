@@ -7,13 +7,13 @@ import appRouter from './routes/UserDashboardLayout';
 import loginRouter from './routes/AuthRoutesSignin';
 
 function App() {
-  const [state, setState] = useState({});
-  const token = localStorage.getItem("token");
+  const [isLoggedIn, setIsLoggedIn] = useState[0];
+  const [state, setState] = useState({token: localStorage.getItem("token")});
 
   return (
     <div>
       <GlobalContext.Provider value={{ state, setState }}>
-        {token ? <RouterProvider router={appRouter} /> : <RouterProvider router={loginRouter} />}
+         <RouterProvider router={appRouter} /> : <RouterProvider router={loginRouter} />
       </GlobalContext.Provider>
     </div>
   );

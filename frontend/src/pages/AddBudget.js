@@ -39,10 +39,9 @@ export default function AddBudget() {
 
     const viewBudget = async () => {
         try {
-            const ret = await getBudget(`${refYear.current.value}-${refMonth.current.value}`)
-            console.log("rettt", ret)
-            if (ret.data) {
-                const items = ret.data.items;
+            const response = await getBudget(`${refYear.current.value}-${refMonth.current.value}`)
+            if (response.data) {
+                const items = response.data.items;
                 const customIndexes = items.map((item, index) => !categories.includes(item.categories) ? index : null ).filter(index => index !== null);
                 setBudgetItems(items);
                 setCustomRow(customIndexes); // restore custom field UI
@@ -135,17 +134,6 @@ export default function AddBudget() {
                 <tbody>
                     {budgetItems.map((row, index) => (
                         <tr key={index}>
-                            {/* <td><input value={row["category"]} type="text" onChange={(e) => updateBudget(index, "category", e.target.value)} style={{ border: errors[index]?.category ? "2px solid red" : "2px solid #ccc" }} /></td> */}
-                            {/* <td>
-                                <select value={row["category"]} type="text" onChange={(e) => updateBudget(index, "category", e.target.value)} style={{ border: errors[index]?.category ? "2px solid red" : "2px solid #ccc" }}>
-                                    <option value="">Select a Category</option>
-                                    <option value="Grocery">Grocery</option>
-                                    <option value="Entertainment">Entertainment</option>
-                                    <option value="Gas">Gas</option>
-                                    <option value="Insurance">Insurance</option>
-                                    <option value="Others">Others</option>
-                                </select>
-                            </td> */}
                             <td>
                                 <select value={customRow.includes(index) ? "Others" : row.category} onChange={(e) => updateBudget(index, "category", e.target.value)} style={{ border: errors[index]?.category ? "2px solid red" : "2px solid #ccc" }}>
                                     <option value="">Select categories</option>
