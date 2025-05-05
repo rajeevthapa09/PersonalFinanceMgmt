@@ -6,9 +6,9 @@ import { login } from "../services/network";
 import "./../styles/global.css"
 
 export default function Login() {
-    let navigate = useNavigate();
-    const { state, setState } = useContext(GlobalContext);
+    const { globalState, setGlobalState } = useContext(GlobalContext);
     const [loginData, setLoginData] = useState({ email: "", password: "" });
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setLoginData({ ...loginData, [e.target.name]: e.target.value })
@@ -22,16 +22,8 @@ export default function Login() {
                 console.log("login", response.data)
                 localStorage.setItem("token", response.data.token);
                 localStorage.setItem("userEmail", response.data.email);
-                setState({...state, user: loginData.email, token: response.data.token});
-                // localStorage.setItem("userId", response.data.userId);
-                // localStorage.setItem("userName", response.data.userName);
-
-                // if(response.data.role === "regular"){
-                //     console.log("i am regular")
-                //     setState({...state, user: user.email, token: response.data.token, userId: response.data.userId, userName: response.data.userName});
-                // }else{
-                //     setState({...state, user: user.email, role: false, token: response.data.token, userId: response.data.userId, userName: response.data.userName});
-                // }
+                setGlobalState({userEmail: response.data.email, token: response.data.token});
+                navigate("/")
             }
         }catch(error){
             console.error("Error logging in: ", error)

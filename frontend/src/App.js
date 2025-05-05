@@ -3,19 +3,23 @@ import './styles/global.css';
 import { useState } from 'react';
 import GlobalContext from './context/GlobalContext';
 import { RouterProvider } from 'react-router-dom';
-import appRouter from './routes/UserDashboardLayout';
-import loginRouter from './routes/AuthRoutesSignin';
+import AppRoutes from './routes/AppRoutes';
+// import loginRouter from './routes/AuthRoutesSignin';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState[0];
-  const [state, setState] = useState({token: localStorage.getItem("token")});
+  
+  const [globalState, setGlobalState] = useState(() => {
+    const token = localStorage.getItem("token");
+    const userEmail = localStorage.getItem("userEmail");
+    return {token, userEmail};
+  });
+
+  const router = AppRoutes(!!globalState.token);
 
   return (
-    <div>
-      <GlobalContext.Provider value={{ state, setState }}>
-         <RouterProvider router={appRouter} /> : <RouterProvider router={loginRouter} />
-      </GlobalContext.Provider>
-    </div>
+    <GlobalContext.Provider value={{ globalState, setGlobalState }}>
+      <RouterProvider router={router} />
+    </GlobalContext.Provider>
   );
 }
 
