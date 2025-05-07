@@ -21,7 +21,7 @@ function App() {
       const token = localStorage.getItem("token");
       if(token){
         const userEmail = localStorage.getItem("userEmail");
-        // const userId = localStorage.getItem("userId");
+        const userId = localStorage.getItem("userId");
         // const userName = localStorage.getItem("userName");
         console.log("user", userEmail, "token", token, "role", globalState.role);
         globalState({...globalState, token, userEmail})
