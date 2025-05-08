@@ -5,6 +5,7 @@ import GlobalContext from './context/GlobalContext';
 import { RouterProvider } from 'react-router-dom';
 import AppRoutes from './routes/AppRoutes';
 // import loginRouter from './routes/AuthRoutesSignin';
+import Login from './pages/Login';
 
 function App() {
   
@@ -21,9 +22,6 @@ function App() {
       const token = localStorage.getItem("token");
       if(token){
         const userEmail = localStorage.getItem("userEmail");
-        const userId = localStorage.getItem("userId");
-        // const userName = localStorage.getItem("userName");
-        console.log("user", userEmail, "token", token, "role", globalState.role);
         globalState({...globalState, token, userEmail})
       }
     } catch (error) {
@@ -37,7 +35,7 @@ function App() {
 
   return (
     <GlobalContext.Provider value={{ globalState, setGlobalState }}>
-      <RouterProvider router={router} />
+      {globalState.token ? <RouterProvider router={router} /> : <Login />}
     </GlobalContext.Provider>
   );
 }

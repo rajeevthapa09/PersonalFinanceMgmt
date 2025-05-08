@@ -1,8 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import "./../styles/global.css"
+import { useContext } from "react";
+import GlobalContext from "../context/GlobalContext";
 
 export default function Home() {
     let navigate = useNavigate();
+    const { globalState, setGlobalState } = useContext(GlobalContext);
 
     const addBudget = () => {
         navigate("/addBudget")
@@ -17,26 +20,26 @@ export default function Home() {
     }
 
     const logOut = () => {
-        localStorage.setItem("token", "");
-        localStorage.setItem("userEmail", "");
-        localStorage.setItem("userId", "");
-        // setState({...state, token: null, user: ""});
+        localStorage.removeItem("token");
+        localStorage.removeItem("userEmail");
+        localStorage.removeItem("userId");
+        setGlobalState({ ...globalState, token: null, user: "" });
     }
 
 
-return (
-    <div className="page-container">
-        <p>Welcome, Rajeev! </p>
-        <p>Here is your financial summary for April, 2025</p>
-        <p>Income: $15,000</p>
-        <p>Expense: $14,000</p>
-        <p>Budget Left: $1,000</p>
-        <button onClick={addExpense}>Add Expense</button>
-        <button onClick={addIncome}>Add Income</button>
-        <button onClick={addBudget}>Add Budget</button>
-        <button onClick={logOut}>Logout</button>
+    return (
+        <div className="page-container">
+            <p>Welcome, Rajeev! </p>
+            <p>Here is your financial summary for April, 2025</p>
+            <p>Income: $15,000</p>
+            <p>Expense: $14,000</p>
+            <p>Budget Left: $1,000</p>
+            <button onClick={addExpense}>Add Expense</button>
+            <button onClick={addIncome}>Add Income</button>
+            <button onClick={addBudget}>Add Budget</button>
+            <button onClick={logOut}>Logout</button>
 
 
-    </div>
-)
+        </div>
+    )
 }
