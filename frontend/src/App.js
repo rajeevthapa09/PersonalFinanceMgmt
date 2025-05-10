@@ -6,22 +6,21 @@ import { RouterProvider } from 'react-router-dom';
 import AppRoutes from './routes/AppRoutes';
 // import loginRouter from './routes/AuthRoutesSignin';
 import Login from './pages/Login';
+import { userEmail } from './services/network';
 
 function App() {
   
-  const [globalState, setGlobalState] = useState(() => {
-    const token = localStorage.getItem("token");
-    const userEmail = localStorage.getItem("userEmail");
-    return {token, userEmail};
-  });
+  const [globalState, setGlobalState] = useState({token: null, userEmail:""});
 
   const router = AppRoutes(!!globalState.token);
 
   const getToken = () => {
     try {
       const token = localStorage.getItem("token");
+      console.log("111")
       if(token){
         const userEmail = localStorage.getItem("userEmail");
+        console.log("222")
         globalState({...globalState, token, userEmail})
       }
     } catch (error) {
@@ -35,7 +34,7 @@ function App() {
 
   return (
     <GlobalContext.Provider value={{ globalState, setGlobalState }}>
-      {globalState.token ? <RouterProvider router={router} /> : <Login />}
+      <RouterProvider router={router} />  
     </GlobalContext.Provider>
   );
 }
