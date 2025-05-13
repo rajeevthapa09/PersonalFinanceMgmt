@@ -17,7 +17,6 @@ function App() {
   const getToken = () => {
     try {
       const token = localStorage.getItem("token");
-      console.log("111")
       if(token){
         const userEmail = localStorage.getItem("userEmail");
         console.log("222")
