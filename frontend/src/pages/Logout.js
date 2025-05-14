@@ -3,7 +3,7 @@ import GlobalContext from "./GlobalContext";
 
 export default function Logout(){
     const {state, setState} = useContext(GlobalContext);
-    const logout = () => {
+    const logOut = () => {
         localStorage.setItem("token", "");
         localStorage.setItem("userEmail", "");
         localStorage.setItem("userId", "");
@@ -11,7 +11,7 @@ export default function Logout(){
     }
     return(
         <div>
-            <button onClick={logout}>Logout</button>
+            <button onClick={logOut}>Logout</button>
         </div>
     )
 }
