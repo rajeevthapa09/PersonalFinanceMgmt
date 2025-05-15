@@ -33,7 +33,7 @@ function App() {
 
   return (
     <GlobalContext.Provider value={{ globalState, setGlobalState }}>
-      <RouterProvider router={router} />  
+      <RouterProvider router={router} key={globalState.token ? "auth" : "guest"} />
     </GlobalContext.Provider>
   );
 }

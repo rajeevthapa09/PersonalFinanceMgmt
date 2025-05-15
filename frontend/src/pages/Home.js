@@ -19,11 +19,11 @@ export default function Home() {
         navigate("/addExpense")
     }
 
-    const logOut = () => {
+    const logout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("userEmail");
         localStorage.removeItem("userId");
-        setGlobalState({ ...globalState, token: null, user: "" });
+        setGlobalState({ token: null, userEmail: null });
     }
 
 
@@ -37,7 +37,7 @@ export default function Home() {
             <button onClick={addExpense}>Add Expense</button>
             <button onClick={addIncome}>Add Income</button>
             <button onClick={addBudget}>Add Budget</button>
-            <button onClick={logOut}>Logout</button>
+            <button onClick={logout}>Logout</button>
 
 
         </div>
