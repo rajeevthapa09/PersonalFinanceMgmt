@@ -20,7 +20,7 @@ function App() {
       if(token){
         const userEmail = localStorage.getItem("userEmail");
         console.log("222")
-        globalState({...globalState, token, userEmail})
+        setGlobalState({token, userEmail})
       }
     } catch (error) {
       console.log(error);
