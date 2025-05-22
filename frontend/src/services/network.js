@@ -1,6 +1,5 @@
 import axios from 'axios'
 axios.defaults.baseURL = "http://localhost:3001";
-export const userEmail = localStorage.getItem("userEmail")
 
 
 export async function signup(userData) {
@@ -37,7 +36,7 @@ export async function login(userData){
     }
 }
 
-export async function storeBudget(budgetInfo){
+export async function storeBudget(budgetInfo, userEmail){
     const url=`/api/budgets/${userEmail}`;
     console.log("url", url)
     try{
@@ -52,7 +51,7 @@ export async function storeBudget(budgetInfo){
     }
 }
 
-export async function getBudget(date){
+export async function getBudget(date, userEmail){
     const url = `/api/budgets?date=${date}&email=${userEmail}`;
     console.log("url", url);
     try{

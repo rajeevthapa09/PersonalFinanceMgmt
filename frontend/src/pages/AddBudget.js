@@ -7,7 +7,7 @@ import "./../styles/global.css"
 
 export default function AddBudget() {
 
-    const { state, setState } = useContext(GlobalContext);
+    const { globalState, setGlobalState } = useContext(GlobalContext);
 
     const [budgetItems, setBudgetItems] = useState([{ category: "", estimated: "", notes: "" }]);
     const [errors, setError] = useState([]);
@@ -39,7 +39,7 @@ export default function AddBudget() {
 
     const viewBudget = async () => {
         try {
-            const response = await getBudget(`${refYear.current.value}-${refMonth.current.value}`)
+            const response = await getBudget(`${refYear.current.value}-${refMonth.current.value}`, globalState.userEmail )
             if (response.data) {
                 const items = response.data.items;
                 const customIndexes = items.map((item, index) => !categories.includes(item.categories) ? index : null ).filter(index => index !== null);
@@ -91,7 +91,7 @@ export default function AddBudget() {
             return;
         }
 
-        const ret = await storeBudget({ items: budgetItems, date: `${refYear.current.value}-${refMonth.current.value}` });
+        const ret = await storeBudget({ items: budgetItems, date: `${refYear.current.value}-${refMonth.current.value}` }, globalState.userEmail);
         if (ret.success) {
             alert("successfully submitted");
         }
