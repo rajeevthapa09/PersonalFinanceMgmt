@@ -6,31 +6,39 @@ import { getBudget, storeBudget } from "../services/network";
 
 export default function AddExpense() {
 
+    const getBudgetInfo = () => {
+        const retBudget = getBudget()
+    }
+
+    useEffect(() => {
+
+    }, [])
+
       
     return(
         <div className="page-container">
             <button>Go Back</button>
             <p>Select Date: </p>
             <select>
-                <option>2025</option>
-                <option>2024</option>
-                <option>2023</option>
-                <option>2022</option>
-                <option>2021</option>
+                <option value="2025">2025</option>
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+                <option value="2022">2022</option>
+                <option value="2021">2021</option>
             </select>
             <select>
-                <option>January</option>
-                <option>Febuary</option>
-                <option>March</option>
-                <option>April</option>
-                <option>May</option>
-                <option>June</option>
-                <option>July</option>
-                <option>August</option>
-                <option>September</option>
-                <option>October</option>
-                <option>November</option>
-                <option>December</option>
+                <option value="1">January</option>
+                <option value="2">Febuary</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
             </select>
 
             <table>
