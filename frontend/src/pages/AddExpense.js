@@ -5,13 +5,18 @@ import { useNavigate } from "react-router-dom";
 import { getBudget, storeBudget } from "../services/network";
 
 export default function AddExpense() {
+    const {globalState} = useContext(GlobalContext);
 
-    const getBudgetInfo = () => {
-        const retBudget = getBudget()
+    const refYear = useRef();
+    const refMonth = useRef()
+
+    const getBudgetInfo = async() => {
+        const retBudget = await getBudget(`${refYear.current.value}-${refMonth.current.value}`, globalState.userEmail);
+        console.log("addexepsne retbudget: ", retBudget);
     }
 
     useEffect(() => {
-
+        getBudgetInfo()
     }, [])
 
       
@@ -19,14 +24,14 @@ export default function AddExpense() {
         <div className="page-container">
             <button>Go Back</button>
             <p>Select Date: </p>
-            <select>
+            <select defaultValue={new Date().getFullYear()} ref={refYear}>
                 <option value="2025">2025</option>
                 <option value="2024">2024</option>
                 <option value="2023">2023</option>
                 <option value="2022">2022</option>
                 <option value="2021">2021</option>
             </select>
-            <select>
+            <select defaultValue={new Date().getMonth() + 1} ref={refMonth}>
                 <option value="1">January</option>
                 <option value="2">Febuary</option>
                 <option value="3">March</option>

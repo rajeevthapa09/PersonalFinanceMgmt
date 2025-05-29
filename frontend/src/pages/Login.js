@@ -38,8 +38,8 @@ export default function Login() {
 
     return (
         <div className="page-container">
-            <p className="header-title">FINT</p>
-            <p className="header-subtitle">Master your Finance</p>
+            <p className="header-title">FlowNest</p>
+            <p className="header-subtitle">A Simple Finance Tracker for Home Use</p>
             <form onSubmit={handleLogin}>
                 <InputField
                     label="Email"
