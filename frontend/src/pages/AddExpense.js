@@ -5,22 +5,25 @@ import { useNavigate } from "react-router-dom";
 import { getBudget, storeBudget } from "../services/network";
 
 export default function AddExpense() {
-    const {globalState} = useContext(GlobalContext);
+    const { globalState } = useContext(GlobalContext);
+
+    const [budget, setBudget] = useState([{ category: "", estimated: "" }])
+    const [expense, setExpense] = useState([{ actual: "", notes: "" }])
 
     const refYear = useRef();
     const refMonth = useRef()
 
-    const getBudgetInfo = async() => {
+    const getBudgetInfo = async () => {
         const retBudget = await getBudget(`${refYear.current.value}-${refMonth.current.value}`, globalState.userEmail);
-        console.log("addexepsne retbudget: ", retBudget);
+        setBudget(retBudget.data.items)
     }
 
     useEffect(() => {
         getBudgetInfo()
     }, [])
 
-      
-    return(
+
+    return (
         <div className="page-container">
             <button>Go Back</button>
             <p>Select Date: </p>
@@ -47,12 +50,25 @@ export default function AddExpense() {
             </select>
 
             <table>
-                <tr>
-                    <th>Category</th>
-                    <th>Estimated</th>
-                    <th>Actual</th>
-                    <th>Notes</th>
-                </tr>
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Estimated</th>
+                        <th>Actual</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {budget.map((budgetItem, index) =>
+                        <tr key={index}>
+                            <td><input value={budgetItem.category} disabled /></td>
+                            <td><input value={budgetItem.estimated} disabled /></td>
+                            <td><input value={expense[index].actual} /></td>
+                            <td><input value={expense[index].notes} /></td>
+                        </tr>
+                    )
+                    }
+                </tbody>
             </table>
         </div>
     )
