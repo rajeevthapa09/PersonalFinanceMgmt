@@ -53,7 +53,7 @@ async function startServer() {
           return res.status(401).send({ success: false, error: "Invalid email or password" });
         }
 
-        console.log("here 11")
+
         const correctPwd = await bcrypt.compare(body.password, currentUser.password);
         if (!correctPwd) {
           return res.status(401).send({ success: false, error: "Invalid email or password" });
@@ -82,7 +82,6 @@ async function startServer() {
       console.log("authorization header: ", req.headers["authorization"]);
       const key = PRIVATE_KEY;
 
-      console.log("token is auth: ", token);
       if (!token) {
         return res.status(401).send({ success: false, error: "Please provide token" });
       }
@@ -134,6 +133,21 @@ async function startServer() {
 
       } catch (error) {
         res.status(400).send({ success: false, error: error.message })
+      }
+    })
+
+    app.post("/api/expense/:email", async (req, res) => {
+      const db = getDb();
+      try {
+        const dbResult = await db.collection(COLLECTION_NAME).findOne({ email: req.params.email });
+        console.log("dbResult: ", dbResult)
+        if (!dbResult) {
+          return res.status(404).send({ success: false, error: "User not found" });
+        }
+        // const expenseFound = dbResult.expense.find((expenseItem) => expenseItem.date ===  )
+
+      } catch {
+        res.status(400).send({ sucess: false, error: error.message })
       }
     })
 

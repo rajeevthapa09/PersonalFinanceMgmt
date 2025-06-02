@@ -2,7 +2,7 @@
 import { useRef, useContext, useState, useEffect } from "react";
 import GlobalContext from "../context/GlobalContext";
 import { useNavigate } from "react-router-dom";
-import { getBudget, storeBudget } from "../services/network";
+import { getBudget, storeExpense } from "../services/network";
 
 export default function AddExpense() {
     const { globalState } = useContext(GlobalContext);
@@ -15,26 +15,55 @@ export default function AddExpense() {
 
     const getBudgetInfo = async () => {
         const retBudget = await getBudget(`${refYear.current.value}-${refMonth.current.value}`, globalState.userEmail);
-        setBudget(retBudget.data.items)
+        if (retBudget.data) {
+            setBudget(retBudget.data.items)
+            setExpense(retBudget.data.items.map(() => ({ actual: "", notes: "" })))
+        } else {
+            setBudget([{ category: "", estimated: "" }])
+            setExpense([{ actual: "", notes: "" }])
+        }
+
     }
 
     useEffect(() => {
         getBudgetInfo()
     }, [])
 
+    const updateExpense = (index, name, value ) => {
+        const copyExpense = [...expense];
+        copyExpense[index] = {[name]: value}
+        setExpense(copyExpense);
+    }
+
+    const handleSubmit = async() => {
+        const expenseInfo = {
+            dateValue: `${refYear.current.value}-${refMonth.current.value}`,
+            userEmail: globalState.userEmail,
+            expenseItems : expense
+
+        }
+
+        const res = await storeExpense(expenseInfo);
+        if(res.success){
+            alert("Expense saved successfully")
+        }else{
+            alert("Error saving expense.")
+        }
+    }
+    
 
     return (
         <div className="page-container">
             <button>Go Back</button>
             <p>Select Date: </p>
-            <select defaultValue={new Date().getFullYear()} ref={refYear}>
+            <select defaultValue={new Date().getFullYear()} ref={refYear} onChange={getBudgetInfo}>
                 <option value="2025">2025</option>
                 <option value="2024">2024</option>
                 <option value="2023">2023</option>
                 <option value="2022">2022</option>
                 <option value="2021">2021</option>
             </select>
-            <select defaultValue={new Date().getMonth() + 1} ref={refMonth}>
+            <select defaultValue={new Date().getMonth() + 1} ref={refMonth} onChange={getBudgetInfo}>
                 <option value="1">January</option>
                 <option value="2">Febuary</option>
                 <option value="3">March</option>
@@ -59,17 +88,22 @@ export default function AddExpense() {
                     </tr>
                 </thead>
                 <tbody>
-                    {budget.map((budgetItem, index) =>
-                        <tr key={index}>
-                            <td><input value={budgetItem.category} disabled /></td>
-                            <td><input value={budgetItem.estimated} disabled /></td>
-                            <td><input value={expense[index].actual} /></td>
-                            <td><input value={expense[index].notes} /></td>
-                        </tr>
-                    )
+                    {budget[0].category !== "" ?
+                        budget.map((budgetItem, index) =>
+                            <tr key={index}>
+                                <td><input value={budgetItem.category} disabled /></td>
+                                <td><input value={budgetItem.estimated} disabled /></td>
+                                <td><input value={expense[index].actual} onChange={(e) => updateExpense(index, "actual", e.target.value)} name="actual" /></td>
+                                <td><input value={expense[index].notes} onChange={(e) => updateExpense(index, "notes", e.target.value)} name="notes" /></td>
+                            </tr>
+                        )
+                        :
+                        <p style={{ color: "red" }}>**please fill in budget page first</p>
                     }
+
                 </tbody>
             </table>
+            <button onClick={handleSubmit}>Submit</button>
         </div>
     )
 }
