@@ -37,7 +37,7 @@ export default function AddExpense() {
 
     const handleSubmit = async() => {
         const expenseInfo = {
-            dateValue: `${refYear.current.value}-${refMonth.current.value}`,
+            date: `${refYear.current.value}-${refMonth.current.value}`,
             userEmail: globalState.userEmail,
             expenseItems : expense
 

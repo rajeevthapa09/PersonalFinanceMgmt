@@ -102,14 +102,14 @@ async function startServer() {
 
       try {
         const budgetFound = await db.collection(COLLECTION_NAME).findOne({ email: req.params.email, "budget.date": req.body.date });
-        let dbResult = null;
+        let user = null;
         if (budgetFound) {
-          dbResult = await db.collection(COLLECTION_NAME).updateOne({ email: req.params.email }, { $set: { "budget.$[obj].items": req.body.items } },
+          user = await db.collection(COLLECTION_NAME).updateOne({ email: req.params.email }, { $set: { "budget.$[obj].items": req.body.items } },
             { arrayFilters: [{ "obj.date": req.body.date }] });
         } else {
-          dbResult = await db.collection(COLLECTION_NAME).updateOne({ email: req.params.email }, { $push: { budget: req.body } });
+          user = await db.collection(COLLECTION_NAME).updateOne({ email: req.params.email }, { $push: { budget: req.body } });
         }
-        res.status(200).send({ success: true, data: dbResult });
+        res.status(200).send({ success: true, data: user });
       } catch (error) {
         console.error(error);
         res.status(400).send({ success: false, error: error.message })
@@ -120,11 +120,11 @@ async function startServer() {
     app.get("/api/budgets", async (req, res) => {
       const db = getDb();
       try {
-        const dbResult = await db.collection(COLLECTION_NAME).findOne({ email: req.query.email });
-        if (!dbResult) {
+        const user = await db.collection(COLLECTION_NAME).findOne({ email: req.query.email });
+        if (!user) {
           return res.status(404).send({ success: false, error: "User not found" });
         }
-        const budgetFound = dbResult.budget.find((budgetItem) => budgetItem.date === req.query.date);
+        const budgetFound = user.budget.find((budgetItem) => budgetItem.date === req.query.date);
         if (budgetFound) {
           res.status(200).send({ success: true, data: budgetFound })
         } else {
@@ -137,16 +137,26 @@ async function startServer() {
     })
 
     app.post("/api/expense/:email", async (req, res) => {
+      console.log("test1")
       const db = getDb();
       try {
-        const dbResult = await db.collection(COLLECTION_NAME).findOne({ email: req.params.email });
-        console.log("dbResult: ", dbResult)
-        if (!dbResult) {
+        console.log("test", req.body.date)
+        const expenseFound = await db.collection(COLLECTION_NAME).findOne({ email: req.params.email, "expense.date": req.body.date });
+        console.log("expense found", expenseFound)
+        let user = null;
+        if (expenseFound) {
+          user = await db.collection(COLLECTION_NAME).updateOne({ email: req.params.email }, { $set: { "expense.$[obj].expenseItems": req.body.expenseItems } },
+            { arrayFilters: [{ "obj.date": req.body.date }] });
+        } else {
+          user = await db.collection(COLLECTION_NAME).updateOne({ email: req.params.email }, { $push: { expense: req.body } });
+        }
+        res.status(200).send({ success: true, data: user });
+        if (!user) {
           return res.status(404).send({ success: false, error: "User not found" });
         }
         // const expenseFound = dbResult.expense.find((expenseItem) => expenseItem.date ===  )
 
-      } catch {
+      } catch(error) {
         res.status(400).send({ sucess: false, error: error.message })
       }
     })

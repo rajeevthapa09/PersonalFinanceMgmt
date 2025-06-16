@@ -68,11 +68,11 @@ export async function getBudget(date, userEmail){
 }
 
 export async function storeExpense(expenseInfo){
-    const url=`/api/expense?email=${expenseInfo.userEmail}`
-    console.log("expenseInfo: ", expenseInfo)
+    const url=`/api/expense/${expenseInfo.userEmail}`
+    console.log("expenseInfo: ", expenseInfo, "token", localStorage.getItem("token"))
 
     try{
-        const res = await axios.post(url, {
+        const res = await axios.post(url, expenseInfo, {
             headers:{'Authorization': `Bearer ${localStorage.getItem("token")}`}
         })
         return res.data;
