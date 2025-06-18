@@ -2,7 +2,7 @@
 import { useRef, useContext, useState, useEffect } from "react";
 import GlobalContext from "../context/GlobalContext";
 import { useNavigate } from "react-router-dom";
-import { getBudget, storeExpense } from "../services/network";
+import { getBudget, storeExpense, getExpense } from "../services/network";
 
 export default function AddExpense() {
     const { globalState } = useContext(GlobalContext);
@@ -25,8 +25,17 @@ export default function AddExpense() {
 
     }
 
+    const getExpenseInfo = async () => {
+        const retExpense = await getExpense(`${refYear.current.value}-${refMonth.current.value}`, globalState.userEmail);
+        console.log("retExpense: ", retExpense)
+        if(retExpense.data){
+            setExpense(retExpense.data.expenseItems)
+        } 
+    }
+
     useEffect(() => {
-        getBudgetInfo()
+        getBudgetInfo();
+        getExpenseInfo();
     }, [])
 
     const updateExpense = (index, name, value ) => {

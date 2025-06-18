@@ -161,6 +161,25 @@ async function startServer() {
       }
     })
 
+    app.get("/api/expenses", async (req, res) => {
+      const db = getDb();
+      try {
+        const user = await db.collection(COLLECTION_NAME).findOne({ email: req.query.email });
+        if (!user) {
+          return res.status(404).send({ success: false, error: "User not found" });
+        }
+        const expenseFound = user.expense.find((expenseItem) => expenseItem.date === req.query.date);
+        if (expenseFound) {
+          res.status(200).send({ success: true, data: expenseFound })
+        } else {
+          res.status(200).send({ success: true, data: null })
+        }
+
+      } catch (error) {
+        res.status(400).send({ success: false, error: error.message })
+      }
+    })
+
     app.listen(3001, () => {
       console.log('Your Server is running on 3001');
     });
