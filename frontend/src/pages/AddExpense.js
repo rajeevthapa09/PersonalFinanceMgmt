@@ -28,9 +28,14 @@ export default function AddExpense() {
     const getExpenseInfo = async () => {
         const retExpense = await getExpense(`${refYear.current.value}-${refMonth.current.value}`, globalState.userEmail);
         console.log("retExpense: ", retExpense)
-        if(retExpense.data){
+        if (retExpense.data) {
             setExpense(retExpense.data.expenseItems)
-        } 
+        }
+    }
+
+    const populateData = () => {
+        getBudgetInfo();
+        getExpenseInfo();
     }
 
     useEffect(() => {
@@ -38,41 +43,46 @@ export default function AddExpense() {
         getExpenseInfo();
     }, [])
 
-    const updateExpense = (index, name, value ) => {
+    const updateExpense = (index, name, value) => {
         const copyExpense = [...expense];
-        copyExpense[index] = {[name]: value}
+        copyExpense[index] = { ...copyExpense[index], [name]: value }
         setExpense(copyExpense);
     }
 
-    const handleSubmit = async() => {
+    const handleSubmit = async () => {
         const expenseInfo = {
             date: `${refYear.current.value}-${refMonth.current.value}`,
             userEmail: globalState.userEmail,
-            expenseItems : expense
+            expenseItems: expense
 
         }
 
         const res = await storeExpense(expenseInfo);
-        if(res.success){
+        if (res.success) {
             alert("Expense saved successfully")
-        }else{
+        } else {
             alert("Error saving expense.")
         }
     }
-    
+
+    let navigate = useNavigate ();
+    const goBack = () => {
+        navigate("/")
+    }
+
 
     return (
         <div className="page-container">
-            <button>Go Back</button>
+            <button onClick={goBack}>Go Back</button>
             <p>Select Date: </p>
-            <select defaultValue={new Date().getFullYear()} ref={refYear} onChange={getBudgetInfo}>
+            <select defaultValue={new Date().getFullYear()} ref={refYear} onChange={populateData}>
                 <option value="2025">2025</option>
                 <option value="2024">2024</option>
                 <option value="2023">2023</option>
                 <option value="2022">2022</option>
                 <option value="2021">2021</option>
             </select>
-            <select defaultValue={new Date().getMonth() + 1} ref={refMonth} onChange={getBudgetInfo}>
+            <select defaultValue={new Date().getMonth() + 1} ref={refMonth} onChange={populateData}>
                 <option value="1">January</option>
                 <option value="2">Febuary</option>
                 <option value="3">March</option>
@@ -107,7 +117,11 @@ export default function AddExpense() {
                             </tr>
                         )
                         :
-                        <p style={{ color: "red" }}>**please fill in budget page first</p>
+                        <tr>
+                            <td colSpan="4">
+                                <p style={{ color: "red" }}>**please fill in budget page first</p>
+                            </td>
+                        </tr>
                     }
 
                 </tbody>

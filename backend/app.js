@@ -140,7 +140,7 @@ async function startServer() {
       console.log("test1")
       const db = getDb();
       try {
-        console.log("test", req.body.date)
+        console.log("test", req.body)
         const expenseFound = await db.collection(COLLECTION_NAME).findOne({ email: req.params.email, "expense.date": req.body.date });
         console.log("expense found", expenseFound)
         let user = null;
@@ -148,7 +148,7 @@ async function startServer() {
           user = await db.collection(COLLECTION_NAME).updateOne({ email: req.params.email }, { $set: { "expense.$[obj].expenseItems": req.body.expenseItems } },
             { arrayFilters: [{ "obj.date": req.body.date }] });
         } else {
-          user = await db.collection(COLLECTION_NAME).updateOne({ email: req.params.email }, { $push: { expense: req.body } });
+          user = await db.collection(COLLECTION_NAME).updateOne({ email: req.params.email }, { $push: { expense: {date: req.body.date, expenseItems: req.body.expenseItems} } });
         }
         res.status(200).send({ success: true, data: user });
         if (!user) {
