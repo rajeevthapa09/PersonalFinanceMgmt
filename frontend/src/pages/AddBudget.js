@@ -13,6 +13,7 @@ export default function AddBudget() {
     const [errors, setError] = useState([]);
     const [categories, setCategories] = useState(["Groceries", "Entertainment", "Gas", "Insurance"]);
     const [customRow, setCustomRow] = useState([])
+    let [sum, setSum] = useState(0);
 
     const refYear = useRef();
     const refMonth = useRef();
@@ -34,15 +35,19 @@ export default function AddBudget() {
             setCustomRow((prev) => ([...prev, rowIndex]));
         }
         setBudgetItems(copyBudget);
+        if (field === "estimated"){
+            sum += parseFloat(value);
+            setSum(sum)
+        }
     }
 
 
     const viewBudget = async () => {
         try {
-            const response = await getBudget(`${refYear.current.value}-${refMonth.current.value}`, globalState.userEmail )
+            const response = await getBudget(`${refYear.current.value}-${refMonth.current.value}`, globalState.userEmail)
             if (response.data) {
                 const items = response.data.items;
-                const customIndexes = items.map((item, index) => !categories.includes(item.categories) ? index : null ).filter(index => index !== null);
+                const customIndexes = items.map((item, index) => !categories.includes(item.categories) ? index : null).filter(index => index !== null);
                 setBudgetItems(items);
                 setCustomRow(customIndexes); // restore custom field UI
 
@@ -84,7 +89,7 @@ export default function AddBudget() {
                     break;
                 }
             }
-            
+
         }
         if (hasError) {
             alert("Please fix the highlighted fields before submitting.");
@@ -151,6 +156,10 @@ export default function AddBudget() {
                         </tr>
                     ))}
                 </tbody>
+                <tr>
+                    <td>Sum</td>
+                    <td>{sum}</td>
+                </tr>
             </table>
 
             <button onClick={handleSubmit}>Submit</button>

@@ -180,6 +180,51 @@ async function startServer() {
       }
     })
 
+    app.post("/api/income/:email", async (req, res) => {
+      console.log("test2")
+      const db = getDb();
+      try {
+        console.log("test income", req.body)
+        const incomeFound = await db.collection(COLLECTION_NAME).findOne({ email: req.params.email, "income.date": req.body.date });
+        console.log("income found", req.body.date)
+        let user = null;
+        if (incomeFound) {
+          user = await db.collection(COLLECTION_NAME).updateOne({ email: req.params.email }, { $set: { "income.$[obj].incomeItems": req.body.incomeItems, "income.$[obj].sum": sum  } },
+            { arrayFilters: [{ "obj.date": req.body.date }] });
+        } else {
+          user = await db.collection(COLLECTION_NAME).updateOne({ email: req.params.email }, { $push: { income: {date: req.body.date, incomeItems: req.body.incomeItems, sum: sum} } });
+        }
+        
+        if (!user) {
+          return res.status(404).send({ success: false, error: "User not found" });
+        }
+        res.status(200).send({ success: true, data: user });
+        // const expenseFound = dbResult.expense.find((expenseItem) => expenseItem.date ===  )
+
+      } catch(error) {
+        res.status(400).send({ sucess: false, error: error.message })
+      }
+    })
+
+     app.get("/api/income", async (req, res) => {
+      const db = getDb();
+      try {
+        const user = await db.collection(COLLECTION_NAME).findOne({ email: req.query.email });
+        if (!user) {
+          return res.status(404).send({ success: false, error: "User not found" });
+        }
+        const incomeFound = user.income.find((incomeItem) => incomeItem.date === req.query.date);
+        if (incomeFound) {
+          res.status(200).send({ success: true, data: incomeFound })
+        } else {
+          res.status(200).send({ success: true, data: null })
+        }
+
+      } catch (error) {
+        res.status(400).send({ success: false, error: error.message })
+      }
+    })
+
     app.listen(3001, () => {
       console.log('Your Server is running on 3001');
     });

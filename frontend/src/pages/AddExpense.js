@@ -74,6 +74,7 @@ export default function AddExpense() {
     return (
         <div className="page-container">
             <button onClick={goBack}>Go Back</button>
+            <p>Expense</p>
             <p>Select Date: </p>
             <select defaultValue={new Date().getFullYear()} ref={refYear} onChange={populateData}>
                 <option value="2025">2025</option>

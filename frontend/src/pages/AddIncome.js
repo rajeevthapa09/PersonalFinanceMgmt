@@ -1,23 +1,22 @@
 
-import { useRef, useContext, useState } from "react";
+import { useRef, useContext, useState, useEffect } from "react";
 import GlobalContext from "../context/GlobalContext";
 import { useNavigate } from "react-router-dom";
+import { storeIncome, getIncome } from "../services/network";
+import "./../styles/global.css"
 
-export default function AddIncome() {
+export default function AddBudget() {
 
-    const { state, setState } = useContext(GlobalContext);
+    const { globalState, setGlobalState } = useContext(GlobalContext);
 
-    const [budget, setBudget] = useState({
-        wages: { expected: "", actual: "", notes: "" },
-        otherIncome: { expected: "", actual: "", notes: "" },
-        rent: { expected: "", actual: "", notes: "" },
-        groceries: { expected: "", actual: "", notes: "" },
-        limit: ""
-    });
+    const [incomeItems, setIncomeItems] = useState([{ category: "", amount: "", notes: "" }]);
+    const [errors, setError] = useState([]);
+    const [categories, setCategories] = useState(["Wages"]);
+    const [customRow, setCustomRow] = useState([])
 
-    const updateBudget = (category, type, value) => {
-        setBudget((prev) => ({ ...prev, [category]: { ...prev[category], [type]: value } }))
-    }
+
+    const refYear = useRef();
+    const refMonth = useRef();
 
     let navigate = useNavigate();
 
@@ -25,21 +24,103 @@ export default function AddIncome() {
         navigate("/")
     }
 
-    const refYear = useRef();
-    const refMonth = useRef();
+    const addNewIncomeRow = () => {
+        setIncomeItems((prev) => [...prev, { category: "", amount: "", notes: "" }])
+    }
+
+    const updateIncome = (rowIndex, field, value) => {
+        const copyIncome = [...incomeItems];
+        copyIncome[rowIndex][field] = value;
+        if (field === "category" && value === "Others" && !customRow.includes(rowIndex)) {
+            setCustomRow((prev) => ([...prev, rowIndex]));
+        }
+        setIncomeItems(copyIncome);
+    }
+
+
+    const viewIncome = async () => {
+        try {
+            const response = await getIncome(`${refYear.current.value}-${refMonth.current.value}`, globalState.userEmail)
+            if (response.data) {
+                const items = response.data.incomeItems;
+                const customIndexes = items.map((item, index) => !categories.includes(item.category) ? index : null).filter(index => index !== null);
+                console.log("income itesms", items, "custom indeas", customIndexes)
+                setIncomeItems(items);
+                setCustomRow(customIndexes); // restore custom field UI
+
+            } else {
+                setIncomeItems([{ category: "", amount: "", notes: "" }])
+                setCustomRow([]); // reset
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    useEffect(() => {
+        viewIncome();
+    }, [])
+
+    const handleSubmit = async () => {
+        let errorList = [];
+
+        for (let i = 0; i < incomeItems.length; i++) {
+            const errorRow = {};
+            if (incomeItems[i].category.trim() === "") {
+                errorRow.category = true;
+            }
+            if (incomeItems[i].amount.trim() === "" || isNaN(incomeItems[i].amount)) {
+                errorRow.amount = true
+            }
+            errorList.push(errorRow);
+        }
+        setError(errorList);
+
+        let hasError = false;
+
+        for (let i = 0; i < errorList.length; i++) {
+            for (let key in errorList[i]) {
+                if (errorList[i][key]) {
+                    hasError = true;
+                    break;
+                }
+            }
+        }
+        if (hasError) {
+            alert("Please fix the highlighted fields before submitting.");
+            return;
+        }
+
+        const incomeInfo = {
+            incomeItems: incomeItems,
+            date: `${refYear.current.value}-${refMonth.current.value}`,
+            userEmail: globalState.userEmail,
+            sum: sum
+        }
+        const ret = await storeIncome(incomeInfo);
+        if (ret.success) {
+            alert("successfully submitted");
+        }
+    }
+    const sum = incomeItems.reduce((total, item) => {
+        const val = parseFloat(item.amount);
+        return total + (isNaN(val) ? 0 : val);
+    }, 0);
 
     return (
-        <div>
+        <div className="page-container">
             <button onClick={goBack}>Go back</button>
+            <p>Income</p>
             <label>Select Date: </label>
-            <select defaultValue={new Date().getFullYear()} ref={refYear}>
+            <select defaultValue={new Date().getFullYear()} ref={refYear} onChange={viewIncome}>
                 <option value="2025">2025</option>
                 <option value="2024">2024</option>
                 <option value="2023">2023</option>
                 <option value="2022">2022</option>
                 <option value="2021">2021</option>
             </select>
-            <select defaultValue={new Date().getMonth() + 1} ref={refMonth}>
+            <select defaultValue={new Date().getMonth() + 1} ref={refMonth} onChange={viewIncome}>
                 <option value="1">January</option>
                 <option value="2">Febuary</option>
                 <option value="3">March</option>
@@ -55,39 +136,40 @@ export default function AddIncome() {
             </select>
 
             <table>
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {incomeItems.map((row, index) => (
+                        <tr key={index}>
+                            <td>
+                                <select value={customRow.includes(index) ? "Others" : row.category} onChange={(e) => updateIncome(index, "category", e.target.value)} style={{ border: errors[index]?.category ? "2px solid red" : "2px solid #ccc" }}>
+                                    <option value="">Select categories</option>
+                                    {categories.map((cat, idx) =>
+                                        <option key={idx} value={cat}>{cat}</option>
+                                    )}
+                                    <option value="Others">Others</option>
+                                </select>
+                                {customRow.includes(index) && <input placeholder="Enter custom category" value={row.category === "Others" ? "" : row.category} type="text" onChange={(e) => { updateIncome(index, "category", e.target.value) }} style={{ marginTop: "4px", border: errors[index]?.category ? "2px solid red" : "2px solid #ccc" }} />}
+
+                            </td>
+                            <td><input value={row.amount} type="text" onChange={(e) => updateIncome(index, "amount", e.target.value)} /></td>
+                            <td><input value={row.notes} type="text" onChange={(e) => updateIncome(index, "notes", e.target.value)} style={{ border: "2px solid #ccc" }} /></td>
+                            <td>{index === incomeItems.length - 1 && (<button onClick={addNewIncomeRow}>+</button>)}</td>
+                        </tr>
+                    ))}
+                </tbody>
                 <tr>
-                    <th>Category</th>
-                    <th>Expected</th>
-                    <th>Actual</th>
-                    <th>Notes</th>
-                </tr>
-                <tr>
-                    <td>Wages</td>
-                    <td><input value={budget.wages.expected} type="text" onChange={(e) => updateBudget("wages", "expected", e.target.value)} /></td>
-                    <td><input value={budget.wages.actual} type="text" onChange={(e) => updateBudget("wages", "actual", e.target.value)} /></td>
-                    <td><input value={budget.wages.notes} type="text" onChange={(e) => updateBudget("wages", "notes", e.target.value)} /></td>
-                </tr>
-                <tr>
-                    <td>Other Income</td>
-                    <td><input value={budget.otherIncome.expected} type="text" onChange={(e) => updateBudget("otherIncome", "expected", e.target.value)} /></td>
-                    <td><input value={budget.otherIncome.actual} type="text" onChange={(e) => updateBudget("otherIncome", "actual", e.target.value)} /></td>
-                    <td><input value={budget.otherIncome.notes} type="text" onChange={(e) => updateBudget("otherIncome", "notes", e.target.value)} /></td>
-                </tr>
-                <tr>
-                    <td>Rent/Mortgage</td>
-                    <td><input value={budget.rent.expected} type="text" onChange={(e) => updateBudget("rent", "expected", e.target.value)} /></td>
-                    <td><input value={budget.rent.actual} type="text" onChange={(e) => updateBudget("rent", "actual", e.target.value)} /></td>
-                    <td><input value={budget.rent.notes} type="text" onChange={(e) => updateBudget("rent", "notes", e.target.value)} /></td>
-                </tr>
-                <tr>
-                    <td>Groceries</td>
-                    <td><input value={budget.groceries.expected} type="text" onChange={(e) => updateBudget("groceries", "expected", e.target.value)} /></td>
-                    <td><input value={budget.groceries.actual} type="text" onChange={(e) => updateBudget("groceries", "actual", e.target.value)} /></td>
-                    <td><input value={budget.groceries.notes} type="text" onChange={(e) => updateBudget("groceries", "notes", e.target.value)} /></td>
+                    <td>Sum:</td>
+                    <td>{sum}</td>
                 </tr>
             </table>
-            <button>Add New Category</button>
-            <button>Submit</button>
+
+            <button onClick={handleSubmit}>Submit</button>
         </div>
     )
 }

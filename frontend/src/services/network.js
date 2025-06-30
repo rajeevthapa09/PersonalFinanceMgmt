@@ -97,3 +97,35 @@ export async function getExpense(date, userEmail){
         return {success: false}
     }
 }
+
+
+export async function storeIncome(incomeInfo){
+    const url=`/api/income/${incomeInfo.userEmail}`
+    console.log("expenseInfo: ", incomeInfo, "token", localStorage.getItem("token"))
+
+    try{
+        const res = await axios.post(url, incomeInfo, {
+            headers:{'Authorization': `Bearer ${localStorage.getItem("token")}`}
+        })
+        return res.data;
+    }catch(error){
+        console.log(error.message);
+        return {success: false}
+    }
+}
+
+export async function getIncome(date, userEmail){
+    const url = `/api/income?date=${date}&email=${userEmail}`;
+    console.log("url", url);
+    try{
+        const res = await axios.get(url, {
+            headers:{'Authorization': `Bearer ${localStorage.getItem("token")}`}
+        })
+        console.log("network111", res.data)
+        return res.data;
+
+    }catch(error){
+        console.log(error.message);
+        return {success: false}
+    }
+}
