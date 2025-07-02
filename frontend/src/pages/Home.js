@@ -1,11 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import "./../styles/global.css"
-import { useContext, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import GlobalContext from "../context/GlobalContext";
+import { getFinancialSummary } from "../services/network";
 
 export default function Home() {
     let navigate = useNavigate();
     const { globalState, setGlobalState } = useContext(GlobalContext);
+    const [summary, setSummary] = useState({income:"", expense:"", budget:""})
 
     const refYear = useRef();
     const refMonth = useRef();
@@ -22,9 +24,18 @@ export default function Home() {
         navigate("/addExpense")
     }
 
-    const viewSummary = () => {
+    const viewSummary = async () => {
+        const retSummary = await getFinancialSummary({date: `${refYear.current.value}-${refMonth.current.value}`, userEmail: globalState.userEmail});
+        if(retSummary.data){
+            console.log("retSummary: ", retSummary);
+            setSummary({...summary, income:retSummary.data.income, expense: retSummary.data.expense, budget: retSummary.data.budget})
+        }
 
     }
+
+    useEffect(()=>{
+        viewSummary();
+    }, [])
 
     const logout = () => {
         localStorage.removeItem("token");
@@ -60,9 +71,9 @@ export default function Home() {
                     <option value="12">December</option>
                 </select>
             </p>
-            <p>Income: $15,000</p>
-            <p>Expense: $14,000</p>
-            <p>Budget Left: $1,000</p>
+            <p>Income: ${summary.income}</p>
+            <p>Expense: ${summary.expense}</p>
+            <p>Budget: ${summary.budget}</p>
             <button onClick={addExpense}>Add Expense</button>
             <button onClick={addIncome}>Add Income</button>
             <button onClick={addBudget}>Add Budget</button>

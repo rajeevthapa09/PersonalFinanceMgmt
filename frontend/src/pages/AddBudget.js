@@ -13,7 +13,7 @@ export default function AddBudget() {
     const [errors, setError] = useState([]);
     const [categories, setCategories] = useState(["Groceries", "Entertainment", "Gas", "Insurance"]);
     const [customRow, setCustomRow] = useState([])
-    let [sum, setSum] = useState(0);
+
 
     const refYear = useRef();
     const refMonth = useRef();
@@ -35,10 +35,6 @@ export default function AddBudget() {
             setCustomRow((prev) => ([...prev, rowIndex]));
         }
         setBudgetItems(copyBudget);
-        if (field === "estimated"){
-            sum += parseFloat(value);
-            setSum(sum)
-        }
     }
 
 
@@ -96,11 +92,16 @@ export default function AddBudget() {
             return;
         }
 
-        const ret = await storeBudget({ items: budgetItems, date: `${refYear.current.value}-${refMonth.current.value}` }, globalState.userEmail);
+        const ret = await storeBudget({ items: budgetItems, date: `${refYear.current.value}-${refMonth.current.value}`, sum }, globalState.userEmail);
         if (ret.success) {
             alert("successfully submitted");
         }
     }
+
+    const sum = budgetItems.reduce((total, item) => {
+        const val = parseFloat(item.estimated);
+        return total + (isNaN(val) ? 0 : val);
+    }, 0);
 
     return (
         <div className="page-container">

@@ -53,8 +53,8 @@ export default function AddExpense() {
         const expenseInfo = {
             date: `${refYear.current.value}-${refMonth.current.value}`,
             userEmail: globalState.userEmail,
-            expenseItems: expense
-
+            expenseItems: expense,
+            sum: sumExpense
         }
 
         const res = await storeExpense(expenseInfo);
@@ -70,6 +70,15 @@ export default function AddExpense() {
         navigate("/")
     }
 
+    const sumExpense = expense.reduce((total, item) => {
+        const val = parseFloat(item.actual);
+        return total + (isNaN(val) ? 0 : val);
+    }, 0);
+
+    const sumBudget = budget.reduce((total, item) => {
+        const val = parseFloat(item.estimated);
+        return total + (isNaN(val) ? 0 : val);
+    }, 0);
 
     return (
         <div className="page-container">
@@ -126,6 +135,11 @@ export default function AddExpense() {
                     }
 
                 </tbody>
+                <tr>
+                    <td>Sum:</td>
+                    <td>{sumBudget}</td>
+                    <td>{sumExpense}</td>
+                </tr>
             </table>
             <button onClick={handleSubmit}>Submit</button>
         </div>

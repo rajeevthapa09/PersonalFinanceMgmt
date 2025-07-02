@@ -104,7 +104,7 @@ async function startServer() {
         const budgetFound = await db.collection(COLLECTION_NAME).findOne({ email: req.params.email, "budget.date": req.body.date });
         let user = null;
         if (budgetFound) {
-          user = await db.collection(COLLECTION_NAME).updateOne({ email: req.params.email }, { $set: { "budget.$[obj].items": req.body.items } },
+          user = await db.collection(COLLECTION_NAME).updateOne({ email: req.params.email }, { $set: { "budget.$[obj].items": req.body.items, "budget.$[obj].sum": req.body.sum } },
             { arrayFilters: [{ "obj.date": req.body.date }] });
         } else {
           user = await db.collection(COLLECTION_NAME).updateOne({ email: req.params.email }, { $push: { budget: req.body } });
@@ -145,10 +145,10 @@ async function startServer() {
         console.log("expense found", expenseFound)
         let user = null;
         if (expenseFound) {
-          user = await db.collection(COLLECTION_NAME).updateOne({ email: req.params.email }, { $set: { "expense.$[obj].expenseItems": req.body.expenseItems } },
+          user = await db.collection(COLLECTION_NAME).updateOne({ email: req.params.email }, { $set: { "expense.$[obj].expenseItems": req.body.expenseItems, "expense.$[obj].sum": req.body.sum } },
             { arrayFilters: [{ "obj.date": req.body.date }] });
         } else {
-          user = await db.collection(COLLECTION_NAME).updateOne({ email: req.params.email }, { $push: { expense: {date: req.body.date, expenseItems: req.body.expenseItems} } });
+          user = await db.collection(COLLECTION_NAME).updateOne({ email: req.params.email }, { $push: { expense: {date: req.body.date, expenseItems: req.body.expenseItems, sum: req.body.sum} } });
         }
         res.status(200).send({ success: true, data: user });
         if (!user) {
@@ -189,10 +189,10 @@ async function startServer() {
         console.log("income found", req.body.date)
         let user = null;
         if (incomeFound) {
-          user = await db.collection(COLLECTION_NAME).updateOne({ email: req.params.email }, { $set: { "income.$[obj].incomeItems": req.body.incomeItems, "income.$[obj].sum": sum  } },
+          user = await db.collection(COLLECTION_NAME).updateOne({ email: req.params.email }, { $set: { "income.$[obj].incomeItems": req.body.incomeItems, "income.$[obj].sum": req.body.sum  } },
             { arrayFilters: [{ "obj.date": req.body.date }] });
         } else {
-          user = await db.collection(COLLECTION_NAME).updateOne({ email: req.params.email }, { $push: { income: {date: req.body.date, incomeItems: req.body.incomeItems, sum: sum} } });
+          user = await db.collection(COLLECTION_NAME).updateOne({ email: req.params.email }, { $push: { income: {date: req.body.date, incomeItems: req.body.incomeItems, sum: req.body.sum} } });
         }
         
         if (!user) {
@@ -216,6 +216,28 @@ async function startServer() {
         const incomeFound = user.income.find((incomeItem) => incomeItem.date === req.query.date);
         if (incomeFound) {
           res.status(200).send({ success: true, data: incomeFound })
+        } else {
+          res.status(200).send({ success: true, data: null })
+        }
+
+      } catch (error) {
+        res.status(400).send({ success: false, error: error.message })
+      }
+    })
+
+      app.get("/api/summary", async (req, res) => {
+      const db = getDb();
+      try {
+        const user = await db.collection(COLLECTION_NAME).findOne({ email: req.query.email });
+        if (!user) {
+          return res.status(404).send({ success: false, error: "User not found" });
+        }
+        const incomeFound = user.income.find((incomeItem) => incomeItem.date === req.query.date);
+        const expenseFound = user.expense.find((expenseItem) => expenseItem.date === req.query.date);
+        const budgetFound = user.budget.find((budgetItem) => budgetItem.date === req.query.date);
+
+        if(incomeFound || expenseFound || budgetFound){
+          res.status(200).send({ success: true, data: {income: incomeFound.sum, expense: expenseFound.sum, budget: budgetFound.sum} })
         } else {
           res.status(200).send({ success: true, data: null })
         }

@@ -129,3 +129,19 @@ export async function getIncome(date, userEmail){
         return {success: false}
     }
 }
+
+export async function getFinancialSummary(info){
+    const url = `/api/summary?date=${info.date}&email=${info.userEmail}`;
+    console.log("url", url);
+    try{
+        const res = await axios.get(url, {
+            headers:{'Authorization': `Bearer ${localStorage.getItem("token")}`}
+        })
+        console.log("network111", res.data)
+        return res.data;
+
+    }catch(error){
+        console.log(error.message);
+        return {success: false}
+    }
+}
