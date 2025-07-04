@@ -2,6 +2,7 @@
 import { useRef, useContext, useState, useEffect } from "react";
 import GlobalContext from "../context/GlobalContext";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../components/NavBar";
 import { getBudget, storeExpense, getExpense } from "../services/network";
 
 export default function AddExpense() {
@@ -65,7 +66,7 @@ export default function AddExpense() {
         }
     }
 
-    let navigate = useNavigate ();
+    let navigate = useNavigate();
     const goBack = () => {
         navigate("/")
     }
@@ -82,8 +83,9 @@ export default function AddExpense() {
 
     return (
         <div className="page-container">
-            <button onClick={goBack}>Go Back</button>
-            <p>Expense</p>
+
+            <Navbar />
+            <h2 className="header-title">Expense</h2>
             <p>Select Date: </p>
             <select defaultValue={new Date().getFullYear()} ref={refYear} onChange={populateData}>
                 <option value="2025">2025</option>
@@ -135,7 +137,7 @@ export default function AddExpense() {
                     }
 
                 </tbody>
-                <tr>
+                <tr className="sum-row">
                     <td>Sum:</td>
                     <td>{sumBudget}</td>
                     <td>{sumExpense}</td>

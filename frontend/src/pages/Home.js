@@ -3,11 +3,12 @@ import "./../styles/global.css"
 import { useContext, useEffect, useRef, useState } from "react";
 import GlobalContext from "../context/GlobalContext";
 import { getFinancialSummary } from "../services/network";
+import Navbar from "../components/NavBar";
 
 export default function Home() {
     let navigate = useNavigate();
     const { globalState, setGlobalState } = useContext(GlobalContext);
-    const [summary, setSummary] = useState({income:"", expense:"", budget:""})
+    const [summary, setSummary] = useState({ income: "", expense: "", budget: "" })
 
     const refYear = useRef();
     const refMonth = useRef();
@@ -25,15 +26,15 @@ export default function Home() {
     }
 
     const viewSummary = async () => {
-        const retSummary = await getFinancialSummary({date: `${refYear.current.value}-${refMonth.current.value}`, userEmail: globalState.userEmail});
-        if(retSummary.data){
+        const retSummary = await getFinancialSummary({ date: `${refYear.current.value}-${refMonth.current.value}`, userEmail: globalState.userEmail });
+        if (retSummary.data) {
             console.log("retSummary: ", retSummary);
-            setSummary({...summary, income:retSummary.data.income, expense: retSummary.data.expense, budget: retSummary.data.budget})
+            setSummary({ ...summary, income: retSummary.data.income, expense: retSummary.data.expense, budget: retSummary.data.budget })
         }
 
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         viewSummary();
     }, [])
 
@@ -47,6 +48,8 @@ export default function Home() {
 
     return (
         <div className="page-container">
+
+            <Navbar />
             <p>Welcome, Rajeev! </p>
             <p>Here is your financial summary for:
                 <select defaultValue={new Date().getFullYear()} ref={refYear} onChange={viewSummary} style={{ width: "10%", marginLeft: "10px" }}>
@@ -71,12 +74,14 @@ export default function Home() {
                     <option value="12">December</option>
                 </select>
             </p>
-            <p>Income: ${summary.income}</p>
-            <p>Expense: ${summary.expense}</p>
-            <p>Budget: ${summary.budget}</p>
-            <button onClick={addExpense}>Add Expense</button>
+            <div className="summary">
+                <p>Income: ${summary.income}</p>
+                <p>Expense: ${summary.expense}</p>
+                <p>Budget: ${summary.budget}</p>
+            </div>
+            {/* <button onClick={addExpense}>Add Expense</button>
             <button onClick={addIncome}>Add Income</button>
-            <button onClick={addBudget}>Add Budget</button>
+            <button onClick={addBudget}>Add Budget</button> */}
             <button onClick={logout}>Logout</button>
 
 

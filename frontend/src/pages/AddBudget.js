@@ -3,6 +3,7 @@ import { useRef, useContext, useState, useEffect } from "react";
 import GlobalContext from "../context/GlobalContext";
 import { useNavigate } from "react-router-dom";
 import { storeBudget, getBudget } from "../services/network";
+import Navbar from "../components/NavBar";
 import "./../styles/global.css"
 
 export default function AddBudget() {
@@ -105,7 +106,8 @@ export default function AddBudget() {
 
     return (
         <div className="page-container">
-            <button onClick={goBack}>Go back</button>
+            <Navbar />
+            <h2 className="header-title">Budget</h2>
             <label>Select Date: </label>
             <select defaultValue={new Date().getFullYear()} ref={refYear} onChange={viewBudget}>
                 <option value="2025">2025</option>
@@ -157,7 +159,7 @@ export default function AddBudget() {
                         </tr>
                     ))}
                 </tbody>
-                <tr>
+                <tr className="sum-row">
                     <td>Sum</td>
                     <td>{sum}</td>
                 </tr>

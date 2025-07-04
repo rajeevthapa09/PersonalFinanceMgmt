@@ -83,3 +83,46 @@ body {
     text-align: center;
     color: #555; /* Soft dark gray */
   }
+
+  .navbar {
+    display: flex;
+    justify-content: center;
+    background-color: #007bff;
+    padding: 10px 0;
+    margin-bottom: 30px;
+    border-radius: 0 0 8px 8px;
+}
+
+.navbar a {
+    color: white;
+    margin: 0 15px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.navbar a:hover {
+    text-decoration: underline;
+}
+
+.sum-row {
+    font-weight: bold;
+    background-color: #f1f1f1;
+    border-top: 2px solid #ccc;
+}
+
+.sum-row td {
+    padding: 8px;
+    font-size: 16px;
+}
+
+.summary {
+    background-color: #f3f3f3;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.summary p {
+    font-size: 18px;
+    margin: 5px 0;
+}
