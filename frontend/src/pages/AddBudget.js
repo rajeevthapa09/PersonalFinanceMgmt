@@ -107,7 +107,7 @@ export default function AddBudget() {
     return (
         <div className="page-container">
             <Navbar />
-            <h2 className="header-title">Budget</h2>
+            <h2 className="page-title">Add Budget</h2>
             <label>Select Date: </label>
             <select defaultValue={new Date().getFullYear()} ref={refYear} onChange={viewBudget}>
                 <option value="2025">2025</option>
@@ -130,7 +130,7 @@ export default function AddBudget() {
                 <option value="11">November</option>
                 <option value="12">December</option>
             </select>
-
+            
             <table>
                 <thead>
                     <tr>

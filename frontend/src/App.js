@@ -10,7 +10,7 @@ import { userEmail } from './services/network';
 
 function App() {
   
-  const [globalState, setGlobalState] = useState({token: null, userEmail:""});
+  const [globalState, setGlobalState] = useState({token: null, userEmail:"", userName: ""});
 
   const router = AppRoutes(!!globalState.token);
 
@@ -19,8 +19,9 @@ function App() {
       const token = localStorage.getItem("token");
       if(token){
         const userEmail = localStorage.getItem("userEmail");
+        const userName = localStorage.getItem("userName");
         console.log("222")
-        setGlobalState({token, userEmail})
+        setGlobalState({token, userEmail, userName})
       }
     } catch (error) {
       console.log(error);

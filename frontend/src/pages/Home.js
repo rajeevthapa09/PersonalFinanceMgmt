@@ -42,7 +42,8 @@ export default function Home() {
         localStorage.removeItem("token");
         localStorage.removeItem("userEmail");
         localStorage.removeItem("userId");
-        setGlobalState({ token: null, userEmail: null });
+        localStorage.removeItem("userName");
+        setGlobalState({ token: null, userEmail: null, userName: null });
     }
 
 
@@ -50,7 +51,8 @@ export default function Home() {
         <div className="page-container">
 
             <Navbar />
-            <p>Welcome, Rajeev! </p>
+            <h2 style={{ color: "#444", marginBottom: "1rem" }}>Dashboard</h2>
+            <p>Welcome, {globalState.userName || "User"}! </p>
             <p>Here is your financial summary for:
                 <select defaultValue={new Date().getFullYear()} ref={refYear} onChange={viewSummary} style={{ width: "10%", marginLeft: "10px" }}>
                     <option value="2025">2025</option>
@@ -74,14 +76,13 @@ export default function Home() {
                     <option value="12">December</option>
                 </select>
             </p>
-            <div className="summary">
+
+            <div className="summary-box">
                 <p>Income: ${summary.income}</p>
                 <p>Expense: ${summary.expense}</p>
                 <p>Budget: ${summary.budget}</p>
             </div>
-            {/* <button onClick={addExpense}>Add Expense</button>
-            <button onClick={addIncome}>Add Income</button>
-            <button onClick={addBudget}>Add Budget</button> */}
+
             <button onClick={logout}>Logout</button>
 
 

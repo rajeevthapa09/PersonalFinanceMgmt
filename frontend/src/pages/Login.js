@@ -22,7 +22,8 @@ export default function Login() {
                 console.log("login", response.data)
                 localStorage.setItem("token", response.data.token);
                 localStorage.setItem("userEmail", response.data.email);
-                setGlobalState({userEmail: response.data.email, token: response.data.token});
+                localStorage.setItem("userName", response.data.userName);
+                setGlobalState({userEmail: response.data.email, token: response.data.token, userName: response.data.userName});
                 navigate("/")
             }
         }catch(error){

@@ -67,7 +67,7 @@ async function startServer() {
             email: currentUser.email,
             role: currentUser.role,
             userId: currentUser._id,
-            userName: currentUser.name
+            userName: currentUser.fname
           }
         });
       } catch (err) {
