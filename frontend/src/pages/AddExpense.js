@@ -85,8 +85,8 @@ export default function AddExpense() {
         <div className="page-container">
 
             <Navbar />
-            <h2 className="header-title">Expense</h2>
-            <p>Select Date: </p>
+            <h2 className="page-title">Add Expense</h2>
+            <label>Select Date: </label>
             <select defaultValue={new Date().getFullYear()} ref={refYear} onChange={populateData}>
                 <option value="2025">2025</option>
                 <option value="2024">2024</option>

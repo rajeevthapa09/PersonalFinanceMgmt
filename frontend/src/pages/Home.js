@@ -4,6 +4,9 @@ import { useContext, useEffect, useRef, useState } from "react";
 import GlobalContext from "../context/GlobalContext";
 import { getFinancialSummary } from "../services/network";
 import Navbar from "../components/NavBar";
+import Chart from "chart.js/auto"
+import { Pie } from "react-chartjs-2"
+
 
 export default function Home() {
     let navigate = useNavigate();
@@ -46,10 +49,18 @@ export default function Home() {
         setGlobalState({ token: null, userEmail: null, userName: null });
     }
 
+    const pieData = {
+        labels: ["Income", "Expense", "Budget"],
+        datasets: [
+            {
+                label: "Pie Chart",
+                data: [summary.income, summary.expense, summary.budget]
+            }
+        ]
+    }
 
     return (
         <div className="page-container">
-
             <Navbar />
             <h2 style={{ color: "#444", marginBottom: "1rem" }}>Dashboard</h2>
             <p>Welcome, {globalState.userName || "User"}! </p>
@@ -81,7 +92,9 @@ export default function Home() {
                 <p>Income: ${summary.income}</p>
                 <p>Expense: ${summary.expense}</p>
                 <p>Budget: ${summary.budget}</p>
+                
             </div>
+            <div style={{width: "350px", height: "350px"}}><Pie data={pieData} /></div>
 
             <button onClick={logout}>Logout</button>
 

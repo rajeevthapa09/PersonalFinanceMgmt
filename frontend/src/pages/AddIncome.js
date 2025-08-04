@@ -112,7 +112,7 @@ export default function AddBudget() {
     return (
         <div className="page-container">
             <Navbar />
-            <h2 className="header-title">Income</h2>
+            <h2 className="page-title">Add Income</h2>
             <label>Select Date: </label>
             <select defaultValue={new Date().getFullYear()} ref={refYear} onChange={viewIncome}>
                 <option value="2025">2025</option>
