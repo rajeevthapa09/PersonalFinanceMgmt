@@ -5,6 +5,7 @@ import AddIncome from "../pages/AddIncome";
 import AddExpense from "../pages/AddExpense";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
+import Profile from "../pages/Profile";
 
 const AppRoutes = (isAuthenticated) =>
   createBrowserRouter([
@@ -23,6 +24,10 @@ const AppRoutes = (isAuthenticated) =>
     {
       path: "/addExpense",
       element: isAuthenticated ? <AddExpense /> : <Login />
+    },
+    {
+      path: "/profile",
+      element: isAuthenticated ? <Profile /> : <Login />
     },
     {
       path: "/signup",

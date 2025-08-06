@@ -34,6 +34,9 @@ export default function Home() {
             console.log("retSummary: ", retSummary);
             setSummary({ ...summary, income: retSummary.data.income, expense: retSummary.data.expense, budget: retSummary.data.budget })
         }
+        else{
+            setSummary({ ...summary, income: 0, expense: 0, budget: 0 })
+        }
 
     }
 
@@ -53,8 +56,12 @@ export default function Home() {
         labels: ["Income", "Expense", "Budget"],
         datasets: [
             {
-                label: "Pie Chart",
-                data: [summary.income, summary.expense, summary.budget]
+                label: "Financial Summary",
+                data: [
+                    Number(summary.income) || 0,
+                    Number(summary.expense) || 0,
+                    Number(summary.budget) || 0,
+                ]
             }
         ]
     }
@@ -92,9 +99,13 @@ export default function Home() {
                 <p>Income: ${summary.income}</p>
                 <p>Expense: ${summary.expense}</p>
                 <p>Budget: ${summary.budget}</p>
-                
+
             </div>
-            <div style={{width: "350px", height: "350px"}}><Pie data={pieData} /></div>
+            {/* <div style={{ width: "350px", height: "350px" }}>
+                {summary && summary.income !== "" && (
+                    <Pie data={pieData} />
+                )}
+            </div> */}
 
             <button onClick={logout}>Logout</button>
 

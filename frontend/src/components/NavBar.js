@@ -8,6 +8,7 @@ export default function Navbar() {
             <Link to="/addBudget">Add Budget</Link>
             <Link to="/addExpense">Add Expense</Link>
             <Link to="/addIncome">Add Income</Link>
+            <Link to="/profile">Profile</Link>
         </nav>
     );
 }
