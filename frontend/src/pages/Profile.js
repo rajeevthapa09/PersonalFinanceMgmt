@@ -3,7 +3,10 @@ export default function Profile(){
 
     return(
         <div>
-            Name:
+            Name: <input />
+            Login: <input />
+            Change Password: <input />
+            Image: <input />
         </div>
     )
 }
