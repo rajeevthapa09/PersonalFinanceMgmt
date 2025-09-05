@@ -107,7 +107,7 @@ export default function Home() {
                 )}
             </div> */}
 
-            <button onClick={logout}>Logout</button>
+            {/* <button onClick={logout}>Logout</button> */}
 
 
         </div>

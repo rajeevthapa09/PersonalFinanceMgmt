@@ -98,23 +98,27 @@ tr:hover {
   }
 
 .navbar {
-  background-color: #007bff;
-  padding: 10px 20px;
   display: flex;
-  gap: 20px;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;   /* keeps all items vertically centered */
+  background: #007bff;   /* your original blue */
+  padding: 10px 20px;
+  border-radius: 0 0 8px 8px;
 }
 
-.navbar a {
+.nav-left a,
+.nav-right a {
   color: white;
   text-decoration: none;
   font-weight: bold;
+  font-size: 16px;
+  margin: 0 10px;
 }
 
-.navbar a:hover {
+.nav-left a:hover,
+.nav-right a:hover {
   text-decoration: underline;
 }
-
 .sum-row {
     font-weight: bold;
     background-color: #f1f1f1;
