@@ -8,7 +8,6 @@ export default function Navbar() {
     const logOut = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("userEmail");
-        localStorage.removeItem("userId");
         localStorage.removeItem("userName");
         setGlobalState({ token: null, userEmail: null, userName: null });
     }

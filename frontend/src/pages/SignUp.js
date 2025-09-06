@@ -12,7 +12,7 @@ const UserRole = {
 
 export default function Signup() {
     let navigate = useNavigate();
-    const [formData, setformData] = useState({ fname: "", address: "", occupation: "", role: "", email: "", password: "", profileImg: "" });
+    const [formData, setformData] = useState({ fname: "", email: "", password: "", profileImg: "" });
     const handleChange = (e) => {
         setformData({ ...formData, [e.target.name]: e.target.value });
     }
@@ -43,14 +43,14 @@ export default function Signup() {
                     onChange={handleChange}
                 />
 
-                <InputField
+                {/* <InputField
                     label="Address"
                     name="address"
                     value={formData.address}
                     onChange={handleChange}
-                />
+                /> */}
 
-                <InputField
+                {/* <InputField
                     label="Occupation"
                     name="occupation"
                     value={formData.occupation}
@@ -68,7 +68,7 @@ export default function Signup() {
                         <option value={UserRole.ADVISOR}>Advisor</option>
                         <option value={UserRole.REGULAR}>Regular</option>
                     </select>
-                </div>
+                </div> */}
 
                 <InputField
                     label="Email"

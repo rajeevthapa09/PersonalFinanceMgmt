@@ -221,3 +221,49 @@ button.go-back:hover {
   padding: 1rem;
   margin-top: 1rem;
 }
+
+/* Profile Page */
+.profile-container {
+  max-width: 800px;
+  margin: 20px auto;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.profile-container h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #003366; /* matches navbar blue */
+  text-align: center;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.profile-row {
+  display: flex;
+  gap: 20px;             /* space between label and value */
+  align-items: center;   /* vertically center */
+  padding: 8px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.profile-row:last-child {
+  border-bottom: none;
+}
+
+.profile-label {
+  width: 120px;          /* fixed width so labels align neatly */
+  font-weight: bold;
+  color: #333;
+}
+
+.profile-value {
+  flex: 1;               /* take remaining space */
+  color: #555;
+}

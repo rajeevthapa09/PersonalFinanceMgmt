@@ -44,13 +44,6 @@ export default function Home() {
         viewSummary();
     }, [])
 
-    const logout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userEmail");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("userName");
-        setGlobalState({ token: null, userEmail: null, userName: null });
-    }
 
     const pieData = {
         labels: ["Income", "Expense", "Budget"],
@@ -106,8 +99,6 @@ export default function Home() {
                     <Pie data={pieData} />
                 )}
             </div> */}
-
-            {/* <button onClick={logout}>Logout</button> */}
 
 
         </div>
