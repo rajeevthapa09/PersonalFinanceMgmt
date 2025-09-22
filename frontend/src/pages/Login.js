@@ -23,7 +23,8 @@ export default function Login() {
                 localStorage.setItem("token", response.data.token);
                 localStorage.setItem("userEmail", response.data.email);
                 localStorage.setItem("userName", response.data.userName);
-                setGlobalState({userEmail: response.data.email, token: response.data.token, userName: response.data.userName});
+                localStorage.setItem("profileImage", response.data.profileImg)
+                setGlobalState({userEmail: response.data.email, token: response.data.token, userName: response.data.userName, profileImg: response.data.profileImg});
                 navigate("/")
             }
         }catch(error){

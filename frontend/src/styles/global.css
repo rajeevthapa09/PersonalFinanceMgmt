@@ -239,6 +239,35 @@ button.go-back:hover {
   text-align: center;
 }
 
+.profile-image {
+  border-radius: 50%;       /* circular profile picture */
+  object-fit: cover;
+  border: 2px solid #ccc;
+  margin-bottom: 10px;      /* space between image and button */
+  height: 150px;
+  width: 150px;
+}
+
+.btn-secondary {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background-color: #e0e0e0;
+}
+
+.profile-image-section {
+  display: flex;
+  flex-direction: column;   /* stack image and button vertically */
+  align-items: center;      /* center them horizontally */
+  margin-left: auto;        /* push to the right */
+  margin-bottom: 20px;
+}
+
 .profile-info {
   display: flex;
   flex-direction: column;

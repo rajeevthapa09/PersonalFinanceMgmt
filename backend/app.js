@@ -4,6 +4,9 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 const PRIVATE_KEY = "finance";
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 require('dotenv').config();
 const { connectToMongo, getDb } = require('./util/database');
 
@@ -12,6 +15,27 @@ app.use(express.json());
 app.use(cors());
 const COLLECTION_NAME = "users";
 
+//ensure uploads dir exists
+const uploadDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadDir)){
+  fs.mkdirSync(uploadDir);
+}
+
+//configure multer
+const storage = multer.diskStorage({
+  destination: (res, file, cb) => {
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, Date.now() + ext);
+  }
+});
+const upload = multer({storage});
+
+// Serve static files from the "public" directory
+app.use("/uploads", express.static(path.join(__dirname, 'uploads')));
+
 
 async function startServer() {
   try {
@@ -19,7 +43,7 @@ async function startServer() {
     console.log("MongoDB connected. Starting server...");
 
 
-    app.post("/signup", async (req, res) => {
+    app.post("/signup", upload.single("profileImg"), async (req, res) => {
       const db = getDb();
 
       try {
@@ -35,7 +59,7 @@ async function startServer() {
 
         const encrypted = await bcrypt.hash(body.password, 10);
 
-        const result = await db.collection(COLLECTION_NAME).insertOne({ ...body, password: encrypted, budget: [], stocks: [], chat: [], reviews: [], monthlyAdvisingFee: 0 });
+        const result = await db.collection(COLLECTION_NAME).insertOne({ ...body, password: encrypted, budget: [], profileImgPath: req.file ? "/uploads/" + req.file.filename : null});
 
         res.status(200).send({ success: true, data: result });
       } catch (error) {
@@ -67,7 +91,8 @@ async function startServer() {
             email: currentUser.email,
             role: currentUser.role,
             userId: currentUser._id,
-            userName: currentUser.fname
+            userName: currentUser.fname,
+            profileImg: currentUser.profileImgPath || null
           }
         });
       } catch (err) {

@@ -17,12 +17,13 @@ export default function Signup() {
         setformData({ ...formData, [e.target.name]: e.target.value });
     }
 
-    const submitSignupForm = async(e) => {
+    const submitSignupForm = async (e) => {
         e.preventDefault();
         try {
             const response = await signup(formData);
             console.log("user added: ", response.data);
             alert("signup successful")
+            navigate("/")
         } catch (err) {
             console.error("Error adding user: ", err);
             alert("Signup failed");
@@ -41,6 +42,7 @@ export default function Signup() {
                     name="fname"
                     value={formData.fname}
                     onChange={handleChange}
+                    required
                 />
 
                 {/* <InputField
@@ -76,6 +78,7 @@ export default function Signup() {
                     type="email"
                     value={formData.email}
                     onChange={handleChange}
+                    required
                 />
 
                 <InputField
@@ -84,6 +87,7 @@ export default function Signup() {
                     type="password"
                     value={formData.password}
                     onChange={handleChange}
+                    required
                 />
 
                 <div style={{ marginBottom: 10 }}>

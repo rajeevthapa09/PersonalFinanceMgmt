@@ -16,7 +16,7 @@ export default function Profile() {
         {/* Profile Image */}
         <div className="profile-image-section">
           <img
-            src={globalState.userImage || "/default-avatar.png"}
+            src={globalState.profileImg ? `http://localhost:3001${globalState.profileImg}` : "/default-avatar.png" }
             alt="Profile"
             className="profile-image"
           />
@@ -26,7 +26,7 @@ export default function Profile() {
         {/* Profile Info */}
         <div className="profile-info">
           <div className="profile-row">
-            <span className="profile-label">Name:</span>
+            <span className="profile-'label">Name:</span>
             <span className="profile-value">{globalState.userName}</span>
           </div>
           <div className="profile-row">

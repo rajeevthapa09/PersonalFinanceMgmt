@@ -9,7 +9,8 @@ export async function signup(userData) {
     try {
         const res = await axios.post(url, userData, {
             headers: {
-                'Content-Type': 'application/json'
+                'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                'Content-Type': 'multipart/form-data'
             }
         });
         console.log("res data ", res.data)
